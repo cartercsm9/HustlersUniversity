@@ -1,0 +1,40 @@
+version: '3.8'
+services:
+    cosc310-mysql:
+        image: mysql:8.0
+        container_name: cosc310-mysql
+        restart: always
+        environment:
+            MYSQL_DATABASE: 'weatherappdb'
+            MYSQL_USER: 'testuser'
+            MYSQL_PASSWORD: '304testpw'
+            MYSQL_ROOT_PASSWORD: '304rootpw'
+        ports:
+            - '3306:3306'
+        expose:
+            - '3306'
+        volumes:
+            - mysql-db:/var/lib/mysql
+            - ./WebContent/ddl:/docker-entrypoint-initdb.d
+        networks:
+            network310:
+                aliases:
+                    - cosc310_mysql
+    cosc310-tomcat:
+        image: tomcat:9.0
+        container_name: cosc310-tomcat
+        restart: always
+        volumes:
+            - ./WebContent:/usr/local/tomcat/webapps/ROOT
+        ports:
+            - '8080:8080'
+        depends_on:
+            - cosc310-mysql
+        networks:
+            network310:
+                aliases:
+                    - cosc310-tomcat
+volumes:
+    mysql-db:
+networks:
+    network310:
