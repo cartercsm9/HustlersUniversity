@@ -1,4 +1,6 @@
-CREATE DATABASE weatherappdb;
+CREATE DATABASE IF NOT EXISTS weatherappdb;
+USE weatherappdb;
+
 go
 
 USE weatherApp;
