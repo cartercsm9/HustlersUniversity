@@ -3,13 +3,13 @@ USE weatherappdb;
 
 go
 
-USE weatherApp;
+USE weatherappdb;
 go
 
-DROP TABLE users;
-DROP TABLE admins;
-DROP TABLE weather_data;
-DROP TABLE user_preferences;
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS admins;
+DROP TABLE IF EXISTS weather_data;
+DROP TABLE IF EXISTS user_preferences;
 
 CREATE TABLE users (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
