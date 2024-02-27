@@ -4,14 +4,15 @@
   "description": "Our project is the development of an online weather application that provides users with both current and historical weather data. The application aims to offer an intuitive and informative platform for users to access weather forecasts, historical weather patterns, and climate changes over time. This will be achieved through a user-friendly interface that simplifies the process of obtaining precise weather updates and historical data analysis.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "ejs": "^3.1.9",
     "express": "^4.18.2",
     "mysql": "^2.18.1"
   }
 }
-

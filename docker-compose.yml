@@ -1,42 +1,45 @@
 version: '3.8'
 services:
-    cosc310-mysql:
-        image: mysql:8.0
-        container_name: cosc310-mysql
-        restart: always
-        environment:
-            MYSQL_DATABASE: 'weatherappdb'
-            MYSQL_USER: 'testuser'
-            MYSQL_PASSWORD: 'testpw'
-            MYSQL_ROOT_PASSWORD: 'rootpw'
-        ports:
-            - '3306:3306'
-        expose:
-            - '3306'
-        volumes:
-            - mysql-db:/var/lib/mysql
-            - ./WebContent/ddl:/docker-entrypoint-initdb.d
-        networks:
-            network310:
-                aliases:
-                    - cosc310_mysql
-    cosc310-node:
-        build: .
-        container_name: cosc310-node
-        restart: always
-        environment:
-            - NODE_ENV=production
-        volumes:
-            - ./WebContent:/app
-        ports:
-            - '3001:3001'
-        depends_on:
-            - cosc310-mysql
-        networks:
-            network310:
-                aliases:
-                    - cosc310-node
+  cosc310-mysql:
+    image: mysql:8.0
+    container_name: cosc310-mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'weatherappdb'
+      MYSQL_USER: 'testuser'
+      MYSQL_PASSWORD: 'testpw'
+      MYSQL_ROOT_PASSWORD: 'rootpw'
+    ports:
+      - '3306:3306'
+    expose:
+      - '3306'
+    volumes:
+      - mysql-db:/var/lib/mysql
+      - ./WebContent/ddl:/docker-entrypoint-initdb.d
+    networks:
+      network310:
+        aliases:
+          - cosc310_mysql
+
+  cosc310-node:
+    build: .
+    container_name: cosc310-node
+    restart: always
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - ./WebContent:/usr/src/app
+    ports:
+      - '3001:3001'
+    depends_on:
+      - cosc310-mysql
+    networks:
+      network310:
+        aliases:
+          - cosc310-node
+
 volumes:
-    mysql-db:
+  mysql-db:
+
 networks:
-    network310:
+  network310:

@@ -3,8 +3,6 @@ USE weatherappdb;
 
 go
 
-USE weatherappdb;
-go
 
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS admins;

@@ -30,3 +30,8 @@ The system will:
 - **Usability**: The interface will be intuitive, requiring minimal to no instruction for new users.
 - **Reliability**: The application will have an uptime of 99.9%, with real-time updates.
 - **Security**: User data and preferences will be securely stored and not shared without consent.
+
+
+Run Server locally with two commands in project directory:
+docker compose build
+docker compose up -d
