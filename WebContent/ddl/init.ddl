@@ -37,6 +37,7 @@ CREATE TABLE weather_data (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+INSERT INTO weather_data (city, temperature) VALUES ('Kelowna', 5);
 
 CREATE TABLE user_preferences (
     preference_id INT AUTO_INCREMENT PRIMARY KEY,

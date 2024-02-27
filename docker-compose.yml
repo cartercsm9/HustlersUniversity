@@ -7,8 +7,8 @@ services:
         environment:
             MYSQL_DATABASE: 'weatherappdb'
             MYSQL_USER: 'testuser'
-            MYSQL_PASSWORD: '304testpw'
-            MYSQL_ROOT_PASSWORD: '304rootpw'
+            MYSQL_PASSWORD: 'testpw'
+            MYSQL_ROOT_PASSWORD: 'rootpw'
         ports:
             - '3306:3306'
         expose:
@@ -20,20 +20,22 @@ services:
             network310:
                 aliases:
                     - cosc310_mysql
-    cosc310-tomcat:
-        image: tomcat:9.0
-        container_name: cosc310-tomcat
+    cosc310-node:
+        build: .
+        container_name: cosc310-node
         restart: always
+        environment:
+            - NODE_ENV=production
         volumes:
-            - ./WebContent:/usr/local/tomcat/webapps/ROOT
+            - ./WebContent:/app
         ports:
-            - '8080:8080'
+            - '3001:3001'
         depends_on:
             - cosc310-mysql
         networks:
             network310:
                 aliases:
-                    - cosc310-tomcat
+                    - cosc310-node
 volumes:
     mysql-db:
 networks:

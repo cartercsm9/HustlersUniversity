@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Weather</title>
+
+    <script src="../public/weathertest.js"></script>
+</head>
+<body>
+    <div id="weatherDisplay">Loading weather data...</div>
+
+    <div id="weatherDataContainer">
+        <h1>Weather Data for New York</h1>
+        <ul id="weatherDataList">
+            <% weatherData.forEach(data => { %>
+                <li><%= data.city %>: <%= data.temperature %>°C</li>
+            <% }) %>
+            
+        </ul>
+    </div>
+</body>  
+</html>

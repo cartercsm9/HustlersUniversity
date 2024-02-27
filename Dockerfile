@@ -1,7 +1,20 @@
-FROM tomcat:9-jdk11
+# Use the official Node.js image as a base image
+FROM node:latest
 
-EXPOSE 8080
+# Set the working directory inside the container
+WORKDIR /usr/src/app
 
-COPY ./WebContent/WEB-INF/lib/mssql-jdbc-11.2.0.jre11.jar /usr/local/tomcat/lib/mssql-jdbc-11.2.0.jre11.jar
+# Copy package.json and package-lock.json (if present) to the working directory
+COPY package*.json ./
 
-CMD ["catalina.sh", "run"]
+# Install dependencies
+RUN npm install
+
+# Copy the rest of the application code to the working directory
+COPY . .
+
+# Expose ports for Node.js and MySQL
+EXPOSE 3001 3306
+
+# Command to run the application
+CMD ["bash", "-c", "service mysql start && node server.js"]
