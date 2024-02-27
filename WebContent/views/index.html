@@ -3,11 +3,15 @@
 <head>
     <meta charset="utf-8">
     <title>Weather</title>
-
-    <script src="/weathertest.js"></script>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <div id="weatherDisplay">Retrieving Weather Data</div>
-    <p>hello</p>
+    <div class="weather-search-container">
+        <h2>Weather Search</h2>
+        <input type="text" id="cityName" placeholder="Enter City Name">
+        <button onclick="submitCityName()">Get Weather</button>
+        <div id="weatherDisplay"></div>
+    </div>
+    <script src="/weathertest.js"></script>
 </body>  
 </html>

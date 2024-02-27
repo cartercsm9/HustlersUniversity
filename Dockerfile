@@ -4,6 +4,7 @@ COPY ./WebContent/package*.json ./
 RUN npm install
 RUN npm install mysql
 RUN npm install ejs
+RUN npm install body-parser
 COPY ./WebContent .
 EXPOSE 3001
 CMD ["npm", "start"]
