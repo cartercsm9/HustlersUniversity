@@ -1,5 +1,5 @@
 const http = require('http');
-const app = require('./app'); // Assuming your Node.js application logic is in app.js
+const app = require('./app');
 
 const port = 3001; // Port to listen on
 

@@ -1,3 +1,4 @@
+require('dotenv').config(); // Load environment variables from .env file
 const express = require('express');
 const path = require('path');
 
@@ -14,13 +15,39 @@ app.get('/', (req, res) => {
     console.log('opening index');
 });
 
-// Endpoint to receive city name and respond
-app.post('/getWeather', (req, res) => {
-    const cityName = req.body.cityName;
-    // Here you can integrate with an API to fetch weather data
-    console.log(`City name received: ${cityName}`);
-    // For now, just send back a confirmation message
-    res.json({ message: `Received city name: ${cityName}` });
+// Your unique API keys stored in environment variables
+const WEATHER_API_KEY = process.env.WEATHER_API_KEY;
+const GEOCODING_API_KEY = process.env.GEOCODING_API_KEY;
+
+// Endpoint to handle city name submission and respond with weather data
+app.post('/getWeatherByCity', async (req, res) => {
+    const { cityName } = req.body;
+
+    // Geocoding URL to get coordinates for the city name
+    const geocodeUrl = `https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(cityName)}&limit=1&appid=${GEOCODING_API_KEY}`;
+
+    try {
+        const geoResponse = await fetch(geocodeUrl);
+        const geoData = await geoResponse.json();
+        console.log(geoData);
+
+
+        if (geoData && geoData.length > 0) {
+            const { lat, lon } = geoData[0];
+
+            // Fetch weather data using the coordinates
+            const weatherUrl = `https://api.weatherapi.com/v1/current.json?key=${WEATHER_API_KEY}&q=${lat},${lon}`;
+            const weatherResponse = await fetch(weatherUrl);
+            const weatherData = await weatherResponse.json();
+
+            res.json(weatherData); // Send weather data back to the client
+        } else {
+            throw new Error("City not found");
+        }
+    } catch (error) {
+        console.error("Server error:", error);
+        res.status(500).send("Error fetching weather data.");
+    }
 });
 
 // Set up the view engine to render HTML files
