@@ -38,3 +38,19 @@ button:hover {
 #weatherDisplay {
     margin-top: 20px;
 }
+.login-link {
+    position: fixed; /* Fixed position relative to the viewport */
+    top: 20px; /* 20px from the top */
+    right: 20px; /* 20px from the right */
+    padding: 10px 20px; /* Padding inside the link */
+    background-color: #007bff; /* Bootstrap primary color */
+    color: white; /* Text color */
+    text-decoration: none; /* No underline */
+    border-radius: 5px; /* Rounded corners */
+}
+
+.login-link:hover {
+    background-color: #0056b3; /* Darker shade for hover effect */
+    text-decoration: none; /* No underline on hover */
+    color: white; /* Maintains text color on hover */
+}
