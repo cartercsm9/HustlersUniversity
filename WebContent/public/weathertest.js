@@ -3,7 +3,7 @@ function submitCityName() {
     fetch('/getWeatherByCity', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json', // Correct Content-Type for JSON
+            'Content-Type': 'application/json',
         },
         // Correctly format the cityName as JSON
         body: JSON.stringify({ cityName: cityName }),
