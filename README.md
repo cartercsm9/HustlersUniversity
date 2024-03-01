@@ -1,4 +1,7 @@
 # codeCrafters
+Run Server locally with two commands in project directory:
+  -  docker compose build
+  - docker compose up -d
 
 ## Project Description
 
@@ -32,6 +35,3 @@ The system will:
 - **Security**: User data and preferences will be securely stored and not shared without consent.
 
 
-Run Server locally with two commands in project directory:
-docker compose build
-docker compose up -d
