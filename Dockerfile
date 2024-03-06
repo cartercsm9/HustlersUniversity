@@ -2,7 +2,7 @@ FROM node:latest
 WORKDIR /usr/src/app
 COPY ./WebContent/package*.json ./
 RUN npm install
-RUN npm install mysql
+RUN npm install mysql2@latest
 RUN npm install ejs
 RUN npm install body-parser
 RUN npm install express node-fetch
