@@ -3,6 +3,7 @@ const express = require('express');
 const path = require('path');
 const mysql = require('mysql2');
 const userRoutes = require('./routes/users');
+const weatherRoutes = require('./routes/forecastInsert');
 const app = express();
 
 // Configure database connection
@@ -19,8 +20,9 @@ const db = mysql.createConnection({
         }
         console.log('Connected to the database successfully');
     });
-// Use routes
-app.use('/users', userRoutes);
+// routes for database
+app.use('/users', userRoutes); //user info
+app.use('/weatherInsert', weatherRoutes); //weather info
 
 
 // Middleware for parsing JSON and URL-encoded data
