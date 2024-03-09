@@ -81,6 +81,27 @@ app.post('/getWeatherByCity', async (req, res) => {
     }
 });
 
+app.post('/signup', async (req, res) => {
+    const { username, email, password } = req.body;
+
+    // Hash the password using bcrypt
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    // Insert user data into the database
+    const query = 'INSERT INTO users (username, password_hash, email) VALUES (?, ?, ?)';
+    db.query(query, [username, hashedPassword, email], (err, result) => {
+        if (err) {
+            console.error('Error inserting user: ' + err.stack);
+            res.status(500).send('Error inserting user');
+            return;
+        }
+        console.log('User inserted with id: ' + result.insertId);
+        res.status(200).send('User inserted successfully');
+    });
+});
+
+
 // Set up the view engine to render HTML files
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'html');
