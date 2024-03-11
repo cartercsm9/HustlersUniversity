@@ -20,7 +20,7 @@
 
             // First, insert the forecast data
             try {
-                await fetch('/forecastInsert/insertForecast', {
+                await fetch('/weather/insertForecast', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -29,7 +29,7 @@
                 });
                 
                 // Then, query the inserted data
-                const queryResponse = await fetch(`/forecastInsert/queryWeatherByCity?cityName=${encodeURIComponent(cityName)}`);
+                const queryResponse = await fetch(`/weather/queryWeatherByCity?cityName=${encodeURIComponent(cityName)}`);
                 const queriedData = await queryResponse.json();
                 
                 // Display the queried data

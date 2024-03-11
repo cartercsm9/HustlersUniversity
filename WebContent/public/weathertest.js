@@ -1,6 +1,6 @@
 function submitCityName() {
     const cityName = document.getElementById('cityName').value;
-    fetch('/getWeatherByCity', {
+    fetch('/weather/getWeatherByCity', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
