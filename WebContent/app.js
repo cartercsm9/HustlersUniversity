@@ -1,31 +1,19 @@
 require('dotenv').config(); // Load environment variables from .env file
 const express = require('express');
 const path = require('path');
-const mysql = require('mysql2');
-const userRoutes = require('./routes/users');
+const db = require('./database.js');
 const app = express();
-
-// Configure database connection
-const db = mysql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME
-});
-// Connect to the database
-    db.connect((err) => {
-        if (err) {
-            throw err;
-        }
-        console.log('Connected to the database successfully');
-    });
-// Use routes
-app.use('/users', userRoutes);
 
 
 // Middleware for parsing JSON and URL-encoded data
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// routes for database
+const userRoutes = require('./routes/users.js')
+app.use('/users', userRoutes);
+const weatherRoutes = require('./routes/forecastInsert.js');
+app.use('/forecastInsert', weatherRoutes); 
 
 // Serve the index HTML page
 app.get('/', (req, res) => {
@@ -33,17 +21,21 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'index.html'));
     console.log('opening index');
 });
-app.get('/login', (req, res) => {
-    res.render('login', { title: 'Login Page' }); // Assuming you have dynamic data to pass
-});
-app.get('/signup', (req, res) => {
-    res.render('signup', { title: 'Signup Page' }); // Assuming you have dynamic data to pass
-});
-
 app.get('/home',(req,res)=> {
     //route to home
     res.sendFile(path.join(__dirname,'views','home.html'));
 });
+app.get('/login', (req, res) => {
+    res.render('login', { title: 'Login Page' });
+});
+app.get('/signup', (req, res) => {
+    res.render('signup', { title: 'Signup Page' });
+});
+app.get('/forecast', (req, res) => {
+    res.render('forecasttest', { title: 'Weather Forecast' }); 
+});
+
+
 
 // Your unique API keys stored in environment variables
 const WEATHER_API_KEY = process.env.WEATHER_API_KEY;
