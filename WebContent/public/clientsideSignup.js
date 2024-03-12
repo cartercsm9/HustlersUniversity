@@ -4,16 +4,23 @@ function validateSignupForm() {
     var confirmPassword = document.getElementById("confirmPassword").value;
 
     // Validate Username
-    var usernamePattern = /^[a-zA-Z0-9]{4,20}$/;
+    var usernamePattern = /^.{4,}$/;
     if (!usernamePattern.test(username)) {
-        alert("Username must be 4-20 characters long and can only contain alphanumeric characters.");
+        alert("Username must be atleast 4 characters long.");
+        return false;
+    }
+    
+    // Validate Email
+    var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (emailPattern.test(email)) {
+        alert("Please enter a valid email address.");
         return false;
     }
 
     // Validate Password
-    var passwordPattern = /^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]{8,}$/;
+    var passwordPattern = /^(?=.*\d)(?=.*[^a-zA-Z0-9\s]).{8,}$/;
     if (!passwordPattern.test(password)) {
-        alert("Password must be at least 8 characters long and include both letters and numbers.");
+        alert("Password must include at least one number, at least one special character, and be at least 8 characters long.");
         return false;
     }
 

@@ -7,6 +7,7 @@ RUN npm install ejs
 RUN npm install body-parser
 RUN npm install express node-fetch
 RUN npm install dotenv
+RUN npm install bcryptjs
 COPY ./WebContent .
 EXPOSE 3001
 CMD ["npm", "start"]
