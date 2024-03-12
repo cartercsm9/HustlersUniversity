@@ -23,18 +23,7 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'index.html'));
     console.log('opening index');
 });
-app.get('/home',(req,res)=> {
-    //route to home
-    res.render('home',{ title: 'Home Page' });
-});
-app.get('/login', (req, res) => {
-    res.render('login', { title: 'Login Page' });
-});
-app.get('/signup', (req, res) => {
-    res.render('signup', { title: 'Signup Page' });
-});
-app.get('/forecast', (req, res) => {
-    res.render('forecasttest', { title: 'Weather Forecast' }); 
+
 });
 
 app.post('/signup', async (req, res) => {
