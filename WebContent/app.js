@@ -14,6 +14,9 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'index.html'));
     console.log('opening index');
 });
+app.get('/login', (req, res) => {
+    res.render('loginPage', { title: 'Login Page' }); // Assuming you have dynamic data to pass
+});
 
 // Your unique API keys stored in environment variables
 const WEATHER_API_KEY = process.env.WEATHER_API_KEY;
