@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../database.js');
 const bcrypt = require('bcryptjs');
+var loggedin;
 
 router.post('/signup', async (req, res) => {
     const { username, email, password } = req.body;
@@ -20,6 +21,7 @@ router.post('/signup', async (req, res) => {
                 return;
             }
             console.log('User inserted with id: ' + result.insertId);
+            loggedin = true;
             res.status(200).send('User inserted successfully');
         });
     } catch (error) {
@@ -36,28 +38,31 @@ router.post('/login', async (req, res) => {
     db.query(query, [username], async (err, results) => {
         if (err) {
             console.error('Error retrieving user: ' + err.stack);
-            res.status(500).send('Error retrieving user');
+            // Pass the actual error message to the template
+            res.redirect('/login?error=Error retrieving user from the database.');
             return;
         }
-
+    
         if (results.length === 0) {
-            // User not found
-            res.status(401).send('Invalid username or password');
+            // Inform the user that the username is not found
+            res.redirect('/login?error=Invalid username or password.');
             return;
         }
-
+    
         // Compare the provided password with the hashed password from the database
         const user = results[0];
         const match = await bcrypt.compare(password, user.password_hash);
         if (match) {
             // Passwords match, user authenticated
-            // Redirect to home.html upon successful login
-            res.redirect('/home');
+            // Redirect to home upon successful login
+            loggedin = true;
+            res.redirect('/home'); // Use a relative path based on your routing
         } else {
             // Passwords do not match
-            res.status(401).send('Invalid username or password');
+            // Inform the user of an invalid login attempt
+            res.redirect('login?error=Invalid username or password.');
         }
-    });
+    });    
 });
 
 
