@@ -15,7 +15,5 @@ function validateLoginForm() {
         alert("Password must include at least one number, at least one special character, and be at least 8 characters long.");
         return false;
     }
-
-    alert("Validation successful.");
     return true;
 }

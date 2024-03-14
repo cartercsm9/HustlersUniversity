@@ -35,6 +35,7 @@ CREATE TABLE weather_data (
     weather_description TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+ALTER TABLE weather_data ADD UNIQUE(city, forecast_date);
 
 CREATE TABLE user_preferences (
     preference_id INT AUTO_INCREMENT PRIMARY KEY,

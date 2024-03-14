@@ -8,6 +8,7 @@ function requestUserLocation() {
                 getCityName(latitude, longitude, (cityName) => {
                     console.log("Callback with cityName:", cityName);
                     submitCityName(cityName, 'currentWeather');
+                    getCurrForecast(cityName);
                 });
             }, function(error) {
                 console.error("Error occurred: " + error.message);

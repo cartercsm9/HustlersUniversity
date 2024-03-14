@@ -15,23 +15,26 @@
     </header>
     <main class="dashboard">
         <div class="info-panels">
-            <div class="panel">
+            <div class="panel" id="weatherPanel">
                 <h3>Current Weather</h3>
-                <div id="currentWeather"></div>
-            </div>
+                <div id="cityName"></div>
+                <div id="temperature"></div>
+                <div id="condition"></div>
+                <img id="weatherIcon" src="" alt="Weather Icon" style="display:none;">
+            </div>   
             <div class="panel">
                 <h3>Forecast</h3>
                 <div id="weatherForecast"></div>
             </div>
             <div class="panel">
                 <h3>Weather Search</h3>
-                <input type="text" id="cityName" placeholder="Enter City Name">
-                <button onclick="submitCityName('cityName','weatherDisplay')">Get Weather</button>
+                <input type="text" id="cityinput" placeholder="Enter City Name">
+                <button onclick="submitCityName('cityinput','weatherDisplay')">Get Weather</button>
                 <div id="weatherDisplay"></div>
             </div>
             <!-- Row 2 -->
             <div class="panel">
-                <a href="/forecast" class="panel-link">Forecast</a>
+                <a href="/forecast" class="panel-link">Forecast Search</a>
             </div>
             <div class="panel">
                 <a href="/history" class="panel-link">Historical Data</a>

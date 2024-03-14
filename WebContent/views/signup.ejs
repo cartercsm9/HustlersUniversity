@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Weather Tracker</title>
+    <link rel="stylesheet" href="css/style4.css"></link>
+</head>
+<body>
+    <div class="container">
+        <h1>Weather Tracker</h1>
+        <form action="/users/signup" method="post" onsubmit="return validateSignupForm()">
+            <p class="small-text">Create account</p>
+            <div>
+                <input type="text" id="username" name="username" class="input-box" placeholder="Enter your username" required>
+            </div>
+            <div>
+                <input type="email" id="email" name="email" class="input-box" placeholder="Enter your email" required>
+            </div>
+            <div>
+                <input type="password" id="password" name="password" class="input-box" placeholder="Create password" required>
+            </div>
+            <div>
+                <input type="password" id="confirmPassword" name="confirmPassword" class="input-box" placeholder="Re-enter password" required>
+            </div>
+            <button type="submit" class="btn">Sign Up</button>
+            <p class="small-text">Already have an account? <a href="login" class="link">login</a></p>
+        </form>
+    </div>
+    <script src="clientsideSignup.js"></script>
+</body>
+</html>
