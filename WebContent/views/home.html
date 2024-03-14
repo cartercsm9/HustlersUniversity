@@ -2,21 +2,52 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Weather</title>
+    <title>Weather Dashboard</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <div clas="login-button">
-        <a href="/login" class="login-button"><button>Login</button></a>
-       
-    </div>
-
-    <div class="weather-search-container">
-        <h2>Weather Search</h2>
-        <input type="text" id="cityName" placeholder="Enter City Name">
-        <button onclick="submitCityName()">Get Weather</button>
-        <div id="weatherDisplay"></div>
-    </div>
+    <header>
+        <div class="header-container">
+            <nav>
+                <a href="/login" class="login-link">Login</a>
+            </nav>
+        </div>
+    </header>
+    <main class="dashboard">
+        <div class="info-panels">
+            <div class="panel">
+                <h3>Current Weather</h3>
+                <div id="currentWeather"></div>
+            </div>
+            <div class="panel">
+                <h3>Forecast</h3>
+                <div id="weatherForecast"></div>
+            </div>
+            <div class="panel">
+                <h3>Weather Search</h3>
+                <input type="text" id="cityName" placeholder="Enter City Name">
+                <button onclick="submitCityName('cityName','weatherDisplay')">Get Weather</button>
+                <div id="weatherDisplay"></div>
+            </div>
+            <!-- Row 2 -->
+            <div class="panel">
+                <a href="/forecast" class="panel-link">Forecast</a>
+            </div>
+            <div class="panel">
+                <a href="/history" class="panel-link">Historical Data</a>
+            </div>
+            <div class="panel">
+                <a href="/map" class="panel-link">Map</a>
+            </div>
+        </div>
+    </main>
     <script src="/weathertest.js"></script>
+    <script src="/getCurrentLocation.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            requestUserLocation();
+        });
+    </script>
+        
 </body>  
 </html>
