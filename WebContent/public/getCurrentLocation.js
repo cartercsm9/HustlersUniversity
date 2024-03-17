@@ -1,27 +1,25 @@
 function requestUserLocation() {
     const userAgreed = window.confirm("We need your location to provide local weather information. Do you allow us to access your location?");
-    if (userAgreed) {
-        if ("geolocation" in navigator) {
-            navigator.geolocation.getCurrentPosition(function(position) {
-                const latitude = position.coords.latitude;
-                const longitude = position.coords.longitude;
-                getCityName(latitude, longitude, (cityName) => {
-                    console.log("Callback with cityName:", cityName);
-                    submitCityName(cityName, 'currentWeather');
-                    getCurrForecast(cityName);
-                });
-            }, function(error) {
-                console.error("Error occurred: " + error.message);
-            }, {
-                enableHighAccuracy: true,
-                timeout: 10000,
-                maximumAge: 0
+    if(userAgreed){
+    if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+            getCityName(latitude, longitude, (cityName) => {
+                console.log("Callback with cityName:", cityName);
+                submitCityName(cityName, 'currentWeather');
+                getCurrForecast(cityName);
             });
-        } else {
-            console.log("Geolocation is not supported by your browser.");
-        }
+        }, function(error) {
+            console.error("Error occurred: " + error.message);
+        }, {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 0
+        });
     } else {
-        console.log("User did not allow location access.");
+        console.log("Geolocation is not supported by your browser.");
+    }
     }
 }
 

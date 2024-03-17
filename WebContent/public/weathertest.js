@@ -119,13 +119,13 @@ async function getCurrForecast(cityName) {
         const queryResponse = await fetch(`/weather/queryWeatherByCity?cityName=${encodeURIComponent(cityName)}`);
         const queriedData = await queryResponse.json();
         document.getElementById('weatherForecast').innerHTML = `
-            <div class="weather-city">City: ${cityName}</div>
+            <div class="weather-city">${cityName}</div>
             <div class="weather-forecasts">
                 ${queriedData.map(data => `
                     <div class="weather-forecast-entry">
-                        <span class="forecast-date">${data.forecast_date}</span>
+                        <span class="forecast-date">${getDayOfWeek(data.forecast_date)}</span>
                         <span class="forecast-temperature">${data.temperature}°C</span>
-                        <span class="forecast-description">${data.weather_description}</span>
+                        <img class="forecast-description" src="${data.icon}"></img>
                     </div>
                 `).join('')}
             </div>
@@ -135,4 +135,11 @@ async function getCurrForecast(cityName) {
         console.error('Error:', error);
         document.getElementById('weatherForecast').textContent = 'Failed to fetch weather data.';
     }
+}
+
+function getDayOfWeek(dateString) {
+    const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    const date = new Date(dateString);
+    const dayOfWeek = date.getUTCDay();
+    return days[dayOfWeek];
 }
