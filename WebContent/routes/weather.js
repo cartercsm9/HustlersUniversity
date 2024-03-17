@@ -32,8 +32,8 @@ router.post('/getWeatherByCity', async (req, res) => {
             throw new Error("City not found");
         }
     } catch (error) {
-        console.error("Server error:", error);
-        res.status(500).send("Error fetching weather data.");
+        console.error(error);
+        res.status(500).send(error.message);
     }
 });
 
