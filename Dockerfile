@@ -2,7 +2,7 @@ FROM node:latest
 WORKDIR /usr/src/app
 COPY ./WebContent/package*.json ./
 RUN npm install
-RUN npm install chai chai-http mocha --save-dev
+RUN npm install chai@^4.3.4 chai-http@^4.3.0 mocha@^9.1.3 --save-dev
 RUN npm install mysql2@latest
 RUN npm install ejs
 RUN npm install body-parser
