@@ -1,17 +1,20 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
-const app = require('../app'); // Adjust the path as necessary to import your Express app
-const expect = chai.expect;
+
+// Adjust the path as necessary to import your Express app
+const app = require('../app.js');
 
 chai.use(chaiHttp);
+
+const expect = chai.expect;
 
 describe('User Authentication', () => {
   describe('/POST /users/signup', () => {
     it('should create a new user', (done) => {
       let user = {
-        username: 'testuser1',
-        email: 'test1@test.com',
-        password: '123456!!'
+        username: 'testuser124',
+        email: 'test13@test.com',
+        password: '123456!!!'
       };
       chai.request(app)
         .post('/users/signup')
@@ -28,8 +31,8 @@ describe('User Authentication', () => {
   describe('/POST /users/login', () => {
     it('should authenticate an existing user', (done) => {
       let user = {
-        username: 'testuser1',
-        password: '123456!!'
+        username: 'testuser12',
+        password: '123456!!!'
       };
       chai.request(app)
         .post('/users/login')
