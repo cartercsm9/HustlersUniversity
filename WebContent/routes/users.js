@@ -2,7 +2,13 @@ const express = require('express');
 const router = express.Router();
 const db = require('../database.js');
 const bcrypt = require('bcryptjs');
-var loggedin;
+const session = require('express-session'); // Import express-session for session management
+
+router.use(session({
+  secret: 'your_secret_key', // Change this to a secure secret key
+  resave: false,
+  saveUninitialized: true
+}));
 
 router.post('/signup', async (req, res) => {
     const { username, email, password } = req.body;
@@ -21,7 +27,8 @@ router.post('/signup', async (req, res) => {
                 return;
             }
             console.log('User inserted with id: ' + result.insertId);
-            loggedin = true;
+            req.session.loggedIn = true; // Set session variable to indicate user is logged in
+            req.session.username = username; // Store username in session for future use
             res.status(200).send('User inserted successfully');
         });
     } catch (error) {
@@ -38,29 +45,24 @@ router.post('/login', async (req, res) => {
     db.query(query, [username], async (err, results) => {
         if (err) {
             console.error('Error retrieving user: ' + err.stack);
-            // Pass the actual error message to the template
             res.redirect('/login?error=Error retrieving user from the database.');
             return;
         }
     
         if (results.length === 0) {
-            // Inform the user that the username is not found
             res.redirect('/login?error=Invalid username or password.');
             return;
         }
     
-        // Compare the provided password with the hashed password from the database
         const user = results[0];
         const match = await bcrypt.compare(password, user.password_hash);
         if (match) {
-            // Passwords match, user authenticated
-            // Redirect to home upon successful login
-            loggedin = true;
-            res.redirect('/home'); // Use a relative path based on your routing
+            // Set session variables upon successful login
+            req.session.loggedIn = true;
+            req.session.username = username;
+            res.redirect('/home'); // Redirect to home upon successful login
         } else {
-            // Passwords do not match
-            // Inform the user of an invalid login attempt
-            res.redirect('login?error=Invalid username or password.');
+            res.redirect('/login?error=Invalid username or password.');
         }
     });    
 });
@@ -85,36 +87,3 @@ router.post('/userPref', (req, res) => {
 
 // Export the router
 module.exports = router;
-
-
-
-
-// Create (Insert):
-// let post = {title: 'Hello MySQL'};
-// let sql = 'INSERT INTO posts SET ?';
-// db.query(sql, post, (err, result) => {
-//     if(err) throw err;
-//     console.log(result.insertId);
-// });
-
-// Read (Select):
-// let sql = 'SELECT * FROM posts WHERE id = ?';
-// db.query(sql, [1], (err, results) => {
-//     if(err) throw err;
-//     console.log(results);
-// });
-
-// Update:
-// let newTitle = 'Hello MySQL Updated';
-// let sql = 'UPDATE posts SET title = ? WHERE id = ?';
-// db.query(sql, [newTitle, 1], (err, result) => {
-//     if(err) throw err;
-//     console.log(result.affectedRows);
-// });
-
-// Delete:
-// let sql = 'DELETE FROM posts WHERE id = ?';
-// db.query(sql, [1], (err, result) => {
-//     if(err) throw err;
-//     console.log(result.affectedRows);
-// });
