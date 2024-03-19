@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ title }}</title>
+    <title><% title %></title>
 </head>
 <body>
     <h1>Welcome Admin</h1>
@@ -18,21 +18,23 @@
             </tr>
         </thead>
         <tbody>
-            {% for user in users %}
+            <% for(let user of users) { %>
             <tr>
-                <td>{{ user.user_id }}</td>
-                <td>{{ user.username }}</td>
-                <td>{{ user.email }}</td>
-                <td>{{ user.created_at }}</td>
+                <td><%= user.user_id %></td>
+                <td><%= user.username %></td>
+                <td><%= user.email %></td>
+                <td><%= user.created_at %></td>
                 <td>
-                    <form action="/removeUser" method="post">
-                        <input type="hidden" name="userId" value="{{ user.user_id }}">
+                    <form action="/users/removeUser" method="post">
+                        <!-- Use EJS tags to output the value -->
+                        <input type="hidden" name="userId" value="<%= user.user_id %>">
                         <button type="submit">Remove</button>
                     </form>
                 </td>
             </tr>
-            {% endfor %}
+            <% } %>
         </tbody>
+        
     </table>
 </body>
 </html>

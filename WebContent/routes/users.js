@@ -83,6 +83,35 @@ router.post('/userPref', (req, res) => {
     });
 });
 
+router.get('/admin', (req, res) => {
+    // Fetch all users from the database
+    db.query('SELECT * FROM users', (err, results) => {
+        if (err) {
+            console.error('Error fetching users: ' + err.stack);
+            res.status(500).send('Error fetching users');
+            return;
+        }
+        
+        // Render admin page with user data
+        res.render('admin', { title: 'Admin Page', users: results });
+    });
+});
+
+router.post('/removeUser', (req, res) => {
+    const userId = req.body.userId;
+
+    // Delete the user from the database
+    db.query('DELETE FROM users WHERE user_id = ?', [userId], (err, result) => {
+        if (err) {
+            console.error('Error deleting user: ' + err.stack);
+            res.status(500).send('Error deleting user');
+            return;
+        }
+        console.log('User deleted with id: ' + userId);
+        res.status(200).send('User deleted successfully');
+    });
+});
+
 
 
 // Export the router
