@@ -46,6 +46,10 @@ app.get('/map', (req, res) => {
     res.render('mapPage', { title: 'Map' });
 });
 
+app.get('/userPref', (req, res) => {
+    res.render('userPref', { title: 'User Preferences' });
+});
+
 // POST route for handling user preferences form submission
 app.post('/user-preferences', (req, res) => {
     const { userId, preferredCity, temperatureUnit } = req.body;

@@ -65,14 +65,14 @@ router.post('/login', async (req, res) => {
     });    
 });
 
-router.post('/user-preferences', (req, res) => {
+router.post('/userPref', (req, res) => {
     const { userId, preferredCity, temperatureUnit } = req.body;
 
     // Insert user preferences into the database
-    const query = 'INSERT INTO user_preferences (user_id, preferred_city, temperature_unit) VALUES (?, ?, ?)';
-    db.query(query, [userId, preferredCity, temperatureUnit], (err, result) => {
-        if (err) {
-            console.error('Error inserting user preferences:', err);
+    const prefQuery = 'INSERT INTO user_preferences (user_id, preferred_city, temperature_unit) VALUES (?, ?, ?)';
+    db.query(prefQuery, [userId, preferredCity, temperatureUnit], (prefErr, prefResult) => {
+        if (prefErr) {
+            console.error('Error inserting user preferences:', prefErr);
             res.status(500).send('Error inserting user preferences');
             return;
         }
@@ -81,7 +81,6 @@ router.post('/user-preferences', (req, res) => {
     });
 });
 
-module.exports = router;
 
 
 // Export the router
