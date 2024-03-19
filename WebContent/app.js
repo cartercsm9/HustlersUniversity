@@ -45,6 +45,12 @@ app.get('/signup', (req, res) => {
 app.get('/forecast', (req, res) => {
     res.render('weatherPage', { title: 'Weather Forecast' });
 });
+app.get('/aboutUs', (req, res) => {
+    res.render('aboutUs', { title: 'aboutUs' });
+});
+app.get('/contactUs', (req, res) => {
+    res.render('contactUs', { title: 'contactUs' });
+});
 
 app.get('/map',(req,res)=>{
     res.render('mapPage', {title: 'Map'});
