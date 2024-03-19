@@ -1,6 +1,7 @@
 require('dotenv').config(); // Load environment variables from .env file
 const express = require('express');
 const path = require('path');
+const session = require('express-session'); // Import express-session for session management
 const db = require('./database.js');
 const app = express();
 const userRoutes = require('./routes/users.js');
@@ -8,6 +9,13 @@ const userRoutes = require('./routes/users.js');
 // Middleware for parsing JSON and URL-encoded data
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Session middleware setup
+app.use(session({
+  secret: 'your_secret_key', // Change this to a secure secret key
+  resave: false,
+  saveUninitialized: true
+}));
 
 // Serve the index HTML page
 app.get('/', (req, res) => {
@@ -111,13 +119,19 @@ app.use(express.static('public'));
 
 // Routes to serve EJS files
 app.get('/', (req, res) => {
+    res.render('index', { title: 'Home Page', username: req.session.username }); // Pass username to index.ejs
     res.render('index', { title: 'Home Page' }); 
     console.log('Opening index');
 });
 
 app.get('/home', (req, res) => {
-    res.render('home', { title: 'Home Page' });
+    if (req.session.loggedIn) {
+        res.render('home', { title: 'Home Page', username: req.session.username }); // Pass username to home.ejs
+    } else {
+        res.redirect('/login'); // Redirect to login page if user is not logged in
+    }
 });
+
 
 app.get('/login', (req, res) => {
     // Example of rendering without an actual error
