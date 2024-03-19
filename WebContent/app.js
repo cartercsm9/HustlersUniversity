@@ -39,6 +39,12 @@ app.get('/login', (req, res) => {
 app.get('/signup', (req, res) => {
     res.render('signup', { title: 'Signup Page' }); // Assuming you have dynamic data to pass
 });
+app.get('/admin', (req, res) => {
+    res.render('admin', { title: 'Admin Page' }); // Assuming you have dynamic data to pass
+});
+app.get('/userPref', (req, res) => {
+    res.render('userPref', { title: 'User Preferences Page' }); // Assuming you have dynamic data to pass
+});
 
 app.get('/home',(req,res)=> {
     //route to home
@@ -79,6 +85,35 @@ app.post('/getWeatherByCity', async (req, res) => {
         console.error("Server error:", error);
         res.status(500).send("Error fetching weather data.");
     }
+});
+
+app.get('/admin', (req, res) => {
+    // Fetch all users from the database
+    db.query('SELECT * FROM users', (err, results) => {
+        if (err) {
+            console.error('Error fetching users: ' + err.stack);
+            res.status(500).send('Error fetching users');
+            return;
+        }
+        
+        // Render admin page with user data
+        res.render('admin', { title: 'Admin Page', users: results });
+    });
+});
+
+app.post('/removeUser', (req, res) => {
+    const userId = req.body.userId;
+
+    // Delete the user from the database
+    db.query('DELETE FROM users WHERE user_id = ?', [userId], (err, result) => {
+        if (err) {
+            console.error('Error deleting user: ' + err.stack);
+            res.status(500).send('Error deleting user');
+            return;
+        }
+        console.log('User deleted with id: ' + userId);
+        res.status(200).send('User deleted successfully');
+    });
 });
 
 // Set up the view engine to render HTML files
