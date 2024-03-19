@@ -1,7 +1,7 @@
 # codeCrafters
 Run Server locally with two commands in project directory:
-  -  docker compose build
-  - docker compose up -d
+  docker compose build
+  docker compose up -d
 
 ## Project Description
 

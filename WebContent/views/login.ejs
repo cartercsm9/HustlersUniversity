@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Weather Tracker</title>
+    <link rel="stylesheet" href="css/style4.css">
+</head>
+<body>
+
+<form method="POST" action="/users/login" onsubmit="return validateLoginForm()">
+    <div class="container">
+        <h1>Weather Tracker</h1>
+        <p class="small-text">Login</p>
+        <input type="text" id="username" class="input-box" placeholder="Enter your username" name="username" required>
+        <input type="password" id="password" class="input-box" placeholder="Enter your password" name="password" required>
+        <a href="userPref.ejs" class="link"> <button class="btn">Login</button></a>
+        <div id="error-message"></div>
+        <p class="small-text">Don't have an account? <a href="signup" class="link">Create account</a></p>
+    </div>
+</form>
+
+
+<script src="clientside.js"></script>
+<script>
+    window.onload = function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const error = urlParams.get('error');
+        if (error) {
+            document.getElementById('error-message').textContent = error;
+        }
+    };
+</script>
+</body>
+</html>

@@ -33,8 +33,10 @@ CREATE TABLE weather_data (
     forecast_date DATE NOT NULL DEFAULT (CURRENT_DATE),
     temperature DECIMAL(5, 2) NOT NULL,
     weather_description TEXT NOT NULL,
+    icon VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+ALTER TABLE weather_data ADD UNIQUE(city, forecast_date);
 
 CREATE TABLE user_preferences (
     preference_id INT AUTO_INCREMENT PRIMARY KEY,
