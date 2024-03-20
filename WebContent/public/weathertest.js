@@ -118,18 +118,44 @@ async function getCurrForecast(cityName) {
         // Then, query the inserted data
         const queryResponse = await fetch(`/weather/queryWeatherByCity?cityName=${encodeURIComponent(cityName)}`);
         const queriedData = await queryResponse.json();
-        document.getElementById('weatherForecast').innerHTML = `
-            <div class="weather-city">${cityName}</div>
-            <div class="weather-forecasts">
-                ${queriedData.map(data => `
-                    <div class="weather-forecast-entry">
-                        <span class="forecast-date">${getDayOfWeek(data.forecast_date)}</span>
-                        <span class="forecast-temperature">${data.temperature}°C</span>
-                        <img class="forecast-description" src="${data.icon}"></img>
-                    </div>
-                `).join('')}
-            </div>
-        `;
+        if (document.getElementById('weatherForecast')) {
+            document.getElementById('weatherForecast').innerHTML = `
+                <div class="weather-city">${cityName}</div>
+                <div class="weather-forecasts">
+                    ${queriedData.map(data => `
+                        <div class="weather-forecast-entry">
+                            <span class="forecast-date">${getDayOfWeek(data.forecast_date)}</span>
+                            <span class="forecast-temperature">${data.temperature}°C</span>
+                            <img class="forecast-description" src="${data.icon}"></img>
+                        </div>
+                    `).join('')}
+                </div>`;
+        } else if (document.getElementById('forecast') && queriedData.length > 0) {
+            let today = queriedData[0];
+            let tomorrow = queriedData[1];
+            let third = queriedData[2];
+
+            document.getElementById('forecast').innerHTML= `
+                <h1>${today.city}</h1>
+                <div class="today">
+                    <h2>Today</h2>
+                    <h2>${today.temperature}°C</h2>
+                    <img src="${today.icon}" alt="Weather Forecast" width="100">
+                </div>
+                <div class="tomorrow">
+                    <h2>Tomorrow</h2>
+                    <h2>${tomorrow.temperature}°C</h2>
+                    <img src="${tomorrow.icon}" alt="Weather Forecast" width="100">
+                </div>
+                <div class="today">
+                    <h2>${getDayOfWeek(third.forecast_date)}</h2>
+                    <h2>${third.temperature}°C</h2>
+                    <img src="${third.icon}" alt="Weather Forecast" width="100">
+                </div>
+            `;
+        }
+
+       
 
     } catch (error) {
         console.error('Error:', error);

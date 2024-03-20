@@ -88,9 +88,9 @@ router.get('/queryWeatherByCity', async (req, res) => {
             weather_description,
             icon
         FROM weather_data
-        WHERE forecast_date >= CURRENT_DATE;
+        WHERE forecast_date >= CURRENT_DATE AND city = ?;
         `;
-    db.query(sql, [cityName, cityName, cityName], (err, result) => { // cityName is repeated for each placeholder
+    db.query(sql, [cityName], (err, result) => {
         if (err) {
             console.error("Database query error:", err);
             res.status(500).json({ error: "Error querying weather data." });
