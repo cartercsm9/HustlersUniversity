@@ -50,14 +50,18 @@ router.post('/insertForecast', async (req, res) => {
         if (weatherData && weatherData.forecast && weatherData.forecast.forecastday) {
             await Promise.all(weatherData.forecast.forecastday.map(forecastDay => {
                 const city = cityName;
-                // Append " 15:30:00" to the forecast date to represent 3:30 PM
-                const forecast_date_time = `${forecastDay.date} 15:30:00`;
+                const forecast_date = forecastDay.date; // Use just the date for simplicity
                 const temperature = forecastDay.day.maxtemp_c;
                 const weather_description = forecastDay.day.condition.text;
                 const icon = forecastDay.day.condition.icon;
-                const sql = 'INSERT INTO weather_data (city, forecast_date, temperature, weather_description, icon) VALUES (?, ?, ?, ?, ?)';
-                const values = [city, forecast_date_time, temperature, weather_description, icon];
-        
+                const humidity = forecastDay.day.avghumidity;
+                const wind_speed = forecastDay.day.maxwind_kph;
+                // Add any additional fields you're interested in here
+
+                const sql = 'INSERT INTO weather_data (city, forecast_date, temperature, weather_description, icon, humidity, wind_speed) VALUES (?, ?, ?, ?, ?, ?, ?)';
+                const values = [city, forecast_date, temperature, weather_description, icon, humidity, wind_speed];
+                // Add any additional fields to the values array
+
                 return new Promise((resolve, reject) => {
                     db.query(sql, values, (err, result) => {
                         if (err) return reject(err);
@@ -86,7 +90,9 @@ router.get('/queryWeatherByCity', async (req, res) => {
             forecast_date, 
             temperature, 
             weather_description,
-            icon
+            icon,
+            humidity,
+            wind_speed
         FROM weather_data
         WHERE forecast_date >= CURRENT_DATE AND city = ?;
         `;

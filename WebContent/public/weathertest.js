@@ -1,5 +1,4 @@
 function submitCityName(inputIdOrCityName, displayId) {
-
     let cityName;
     var idDisplay = false;
     console.log(`${inputIdOrCityName} name`);
@@ -41,7 +40,6 @@ function submitCityName(inputIdOrCityName, displayId) {
 
 
 function displayWeatherData(data) {
-    
     // Toggle visibility of the weather panel
     const weatherPanel = document.getElementById('weatherPanel');
     weatherPanel.style.display = 'block';
@@ -76,9 +74,6 @@ function displayWeatherData(data) {
     } else if (weatherIconEl) {
         weatherIconEl.style.display = 'none'; // Hide the icon if not available
     }
-
-    // Show the weather panel now that it's populated
-    
 }
 
 function displayWeatherDataId(data, displayId) {
@@ -102,7 +97,7 @@ function displayWeatherDataId(data, displayId) {
     } else {
         weatherDisplay.innerHTML = '<p>Weather data is not available.</p>';
     }
-    }
+}
 
 async function getCurrForecast(cityName) {
     try {
@@ -141,16 +136,22 @@ async function getCurrForecast(cityName) {
                     <h2>Today</h2>
                     <h2>${today.temperature}°C</h2>
                     <img src="${today.icon}" alt="Weather Forecast" width="100">
+                    <p>Humidity: ${today.humidity}%</p>
+                    <p>Wind Speed: ${today.wind_speed} kph </p>
                 </div>
                 <div class="tomorrow">
                     <h2>Tomorrow</h2>
                     <h2>${tomorrow.temperature}°C</h2>
                     <img src="${tomorrow.icon}" alt="Weather Forecast" width="100">
+                    <p>Humidity: ${tomorrow.humidity}%</p>
+                    <p>Wind Speed: ${tomorrow.wind_speed} kph </p>
                 </div>
                 <div class="today">
                     <h2>${getDayOfWeek(third.forecast_date)}</h2>
                     <h2>${third.temperature}°C</h2>
                     <img src="${third.icon}" alt="Weather Forecast" width="100">
+                    <p>Humidity: ${third.humidity}%</p>
+                    <p>Wind Speed: ${third.wind_speed} kph </p>
                 </div>
             `;
         }
