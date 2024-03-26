@@ -49,6 +49,9 @@ app.get('/forecast', (req, res) => {
 app.get('/map',(req,res)=>{
     res.render('mapPage', {title: 'Map'});
 });
+app.get('/userPref',(req,res)=>{
+    res.render('userPref', {title: 'User Preferences'});
+});
 
 // SIGINT handler
 process.on('SIGINT', () => {
