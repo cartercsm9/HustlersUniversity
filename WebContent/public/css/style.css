@@ -133,6 +133,7 @@ header .header-container {
     display: block; 
     width: 60px; 
     height: auto;
+    margin: auto;
 }
 #weather-icon {
     display: block; 
@@ -158,13 +159,36 @@ header .header-container {
     text-align: center;
 }
 
+
 .weather-location, .weather-temperature, .weather-condition {
-    display: inline;
-    margin: 0 5px;
-    padding: 2px 5px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    margin: 5px;
+    padding: 8px 10px;
     background-color: #e8e8e8;
     border-radius: 4px;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    color: #333;
+}
+
+
+.weather-temperature {
+    font-weight: bold;
+    color: #E53935; /* Adds emphasis to temperature */
+}
+
+.weather-condition {
+    text-transform: capitalize; /* Ensures the weather condition looks uniform */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .weather-display {
+        flex-direction: column;
+    }
 }
 
 .weather-city {

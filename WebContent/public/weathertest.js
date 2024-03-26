@@ -170,3 +170,9 @@ function getDayOfWeek(dateString) {
     const dayOfWeek = date.getUTCDay();
     return days[dayOfWeek];
 }
+
+
+
+
+
+

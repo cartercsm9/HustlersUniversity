@@ -84,18 +84,44 @@ router.post('/userPref', (req, res) => {
 });
 
 router.get('/admin', (req, res) => {
-    // Fetch all users from the database
-    db.query('SELECT * FROM users', (err, results) => {
-        if (err) {
-            console.error('Error fetching users: ' + err.stack);
-            res.status(500).send('Error fetching users');
-            return;
-        }
-        
-        // Render admin page with user data
-        res.render('admin', { title: 'Admin Page', users: results });
+    const usersQuery = 'SELECT * FROM users';
+    const weatherQuery = `
+        SELECT *
+        FROM weather_data
+        ORDER BY city, forecast_date DESC;
+    `;
+
+    // Wrap each query in a Promise
+    const usersPromise = new Promise((resolve, reject) => {
+        db.query(usersQuery, (err, results) => {
+            if (err) reject(err);
+            else resolve(results);
+        });
     });
+
+    const weatherPromise = new Promise((resolve, reject) => {
+        db.query(weatherQuery, (err, results) => {
+            if (err) reject(err);
+            else resolve(results);
+        });
+    });
+
+    // Use Promise.all to wait for both queries to complete
+    Promise.all([usersPromise, weatherPromise])
+        .then(([usersResults, weatherResults]) => {
+            // Now we have both sets of results, render the template
+            res.render('admin', {
+                title: 'Admin Page',
+                users: usersResults,
+                weatherData: weatherResults
+            });
+        })
+        .catch(err => {
+            console.error('Database query error:', err);
+            res.status(500).send("Error querying database.");
+        });
 });
+
 
 router.post('/removeUser', (req, res) => {
     const userId = req.body.userId;
