@@ -37,18 +37,6 @@ router.post('/getWeatherByCity', async (req, res) => {
     }
 });
 
-router.post('/getWeatherByCoor', async (req, res) => {
-    const { latitude, longitude } = req.body;
-
-        // Fetch weather data using the coordinates
-        const weatherUrl = `https://api.weatherapi.com/v1/current.json?key=${WEATHER_API_KEY}&q=${latitude},${longitude}`;
-        const weatherResponse = await fetch(weatherUrl);
-        const weatherData = await weatherResponse.json();
-        console.log(weatherData);
-
-        res.json(weatherData);
-});
-
 
 // Endpoint to handle city name submission and respond with weather forecast data
 router.post('/insertForecast', async (req, res) => {
@@ -118,25 +106,32 @@ router.get('/queryWeatherByCity', async (req, res) => {
     });
 });
 
+// Define route to fetch historical weather data
+router.get('/grabOldWeather', async (req, res) => {
+    console.log('Request received to fetch historical weather data');
 
-router.post('/removeEntry', (req, res) => {
-    const weather_id = req.body.weather_id;
+    const query = `SELECT forecast_date, city, temperature, weather_description 
+                   FROM weather_data 
+                   WHERE forecast_date < CURDATE()`;
 
-    // Delete the entry from the database
-    db.query('DELETE FROM weather_data WHERE weather_id = ?', [weather_id], (err, result) => {
+    db.query(query, (err, results) => {
         if (err) {
-            console.error('Error deleting entry: ' + err.stack);
-            // Consider using flash messages for error handling
-            // res.flash('error', 'Error deleting entry');
-            res.redirect('/users/admin'); // Redirect even in case of error
+            console.error('Error fetching historical weather data:', err);
+            res.status(500).send('Error fetching historical weather data');
         } else {
-            console.log('Entry deleted with id: ' + weather_id);
-            // Optionally use flash messages for success message
-            // res.flash('success', 'Entry deleted successfully');
-            res.redirect('/users/admin');
+            console.log('Sending historical weather data:', results);
+
+            if (results.length === 0) {
+                console.log('No historical weather data found'); // Debug statement
+                res.status(404).json({ error: 'No historical weather data found' });
+            } else {
+                res.json(results); // Send the fetched data as JSON response
+            }
         }
     });
 });
+
+
 
 
 
