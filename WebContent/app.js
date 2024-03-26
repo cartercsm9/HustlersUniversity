@@ -80,6 +80,10 @@ app.get('/userPref', (req, res) => {
     res.render('userPref', { title: 'User Preferences Page' }); 
 });
 
+app.get('/historicalWeatherData', (req, res) => {
+    res.render('historicalWeatherData', { title: 'Historical Weather Data' }); 
+});
+
 // SIGINT handler
 process.on('SIGINT', () => {
     db.end((err) => {

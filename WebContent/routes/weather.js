@@ -100,6 +100,35 @@ router.get('/queryWeatherByCity', async (req, res) => {
     });
 });
 
+// Define route to fetch historical weather data
+router.get('/grabOldWeather', async (req, res) => {
+    console.log('Request received to fetch historical weather data');
+
+    const query = `SELECT forecast_date, city, temperature, weather_description 
+                   FROM weather_data 
+                   WHERE forecast_date < CURDATE()`;
+
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Error fetching historical weather data:', err);
+            res.status(500).send('Error fetching historical weather data');
+        } else {
+            console.log('Sending historical weather data:', results);
+
+            if (results.length === 0) {
+                console.log('No historical weather data found'); // Debug statement
+                res.status(404).json({ error: 'No historical weather data found' });
+            } else {
+                res.json(results); // Send the fetched data as JSON response
+            }
+        }
+    });
+});
+
+
+
+
+
 
 
 // Export the router
