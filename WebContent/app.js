@@ -75,10 +75,6 @@ app.get('/userPref',(req,res)=>{
     res.render('userPref', {title: 'User Preferences'});
 });
 
-app.get('/admin', (req, res) => {
-    res.render('admin', { title: 'Admin Page' }); 
-});
-
 app.get('/userPref', (req, res) => {
     res.render('userPref', { title: 'User Preferences Page' }); 
 });

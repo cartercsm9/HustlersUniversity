@@ -1,27 +1,33 @@
 function requestUserLocation() {
     const userAgreed = window.confirm("We need your location to provide local weather information. Do you allow us to access your location?");
-    if(userAgreed){
-    if ("geolocation" in navigator) {
-        navigator.geolocation.getCurrentPosition(function(position) {
-            const latitude = position.coords.latitude;
-            const longitude = position.coords.longitude;
-            getCityName(latitude, longitude, (cityName) => {
-                console.log("Callback with cityName:", cityName);
-                submitCityName(cityName, 'currentWeather');
-                getCurrForecast(cityName);
+    if (userAgreed) {
+        if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(position => {
+                const latitude = position.coords.latitude;
+                const longitude = position.coords.longitude;
+                // Handle the promise returned by getCityName
+                getCityName(latitude, longitude)
+                    .then(cityName => {
+                        console.log("Callback with cityName:", cityName);
+                        submitCityName(cityName, 'currentWeather');
+                        getCurrForecast(cityName);
+                    })
+                    .catch(error => {
+                        console.error("Error occurred: " + error.message);
+                    });
+            }, error => {
+                console.error("Error occurred: " + error.message);
+            }, {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 0
             });
-        }, function(error) {
-            console.error("Error occurred: " + error.message);
-        }, {
-            enableHighAccuracy: true,
-            timeout: 10000,
-            maximumAge: 0
-        });
-    } else {
-        console.log("Geolocation is not supported by your browser.");
-    }
+        } else {
+            console.log("Geolocation is not supported by your browser.");
+        }
     }
 }
+
 
 function getCityName(latitude, longitude) {
     return new Promise((resolve, reject) => {
@@ -56,4 +62,4 @@ function getCityName(latitude, longitude) {
 
 
 
-module.exports.getCityName = getCityName;
+// module.exports.getCityName = getCityName;

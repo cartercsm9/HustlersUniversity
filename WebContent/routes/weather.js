@@ -106,6 +106,37 @@ router.get('/queryWeatherByCity', async (req, res) => {
     });
 });
 
+router.post('/getWeatherByCoor', async (req, res) => {
+    const { latitude, longitude } = req.body;
+
+        // Fetch weather data using the coordinates
+        const weatherUrl = `https://api.weatherapi.com/v1/current.json?key=${WEATHER_API_KEY}&q=${latitude},${longitude}`;
+        const weatherResponse = await fetch(weatherUrl);
+        const weatherData = await weatherResponse.json();
+        console.log(weatherData);
+
+        res.json(weatherData);
+});
+
+router.post('/removeEntry', (req, res) => {
+    const weather_id = req.body.weather_id;
+
+    // Delete the entry from the database
+    db.query('DELETE FROM weather_data WHERE weather_id = ?', [weather_id], (err, result) => {
+        if (err) {
+            console.error('Error deleting entry: ' + err.stack);
+            // Consider using flash messages for error handling
+            // res.flash('error', 'Error deleting entry');
+            res.redirect('/users/admin'); // Redirect even in case of error
+        } else {
+            console.log('Entry deleted with id: ' + weather_id);
+            // Optionally use flash messages for success message
+            // res.flash('success', 'Entry deleted successfully');
+            res.redirect('/users/admin');
+        }
+    });
+});
+
 // Define route to fetch historical weather data
 router.get('/grabOldWeather', async (req, res) => {
     console.log('Request received to fetch historical weather data');
