@@ -120,7 +120,14 @@ app.get('/map', (req, res) => {
 });
 app.get('/userPref', (req, res) => {
     res.render('userPref', { title: 'User Preferences' });
+});app.get('/eduRes',(req,res)=>{
+    res.render('eduRes', {title: 'eduRes'});
 });
+app.get('/fav',(req,res)=>{
+    res.render('fav', {title: 'fav'});
+});
+
+
 app.get('/historyPage', (req, res) => {
     res.render('historicalWeatherData', { title: 'Historical Data' });
 });
