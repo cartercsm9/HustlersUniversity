@@ -9,7 +9,7 @@ describe('Weather API Endpoints', () => {
   describe('POST /weather/getWeatherByCity', () => {
     it('should return weather data for a valid city name', (done) => {
       const requestBody = {
-        cityName: 'New York', // Use a well-known city name to ensure the external API can return data
+        cityName: 'New York',
       };
 
       chai.request(app)
@@ -28,7 +28,7 @@ describe('Weather API Endpoints', () => {
 
     it('should return an error for an invalid city name', (done) => {
       const requestBody = {
-        cityName: 'InvalidCityName123', // Use an invalid city name to test error handling
+        cityName: 'InvalidCityName123',
       };
 
       chai.request(app)
@@ -93,11 +93,20 @@ describe('Weather API Endpoints', () => {
             // Expect at least one result if your test data includes London
             expect(res.body.length).to.be.greaterThan(0);
             // Verify structure of the returned weather data
-            expect(res.body[0]).to.have.all.keys('city', 'forecast_date', 'temperature', 'weather_description');
+            expect(res.body[0]).to.have.all.keys(
+              'city', 
+              'forecast_date', 
+              'temperature', 
+              'weather_description', 
+              'humidity', 
+              'icon', 
+              'wind_speed', 
+              'country'
+            );
             done();
           });
       });
-  
+
       it('should return an empty array for a city with no data', (done) => {
         const cityName = 'NoDataCity';
         chai.request(app)
