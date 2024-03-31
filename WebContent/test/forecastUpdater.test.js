@@ -1,7 +1,7 @@
 const sinon = require('sinon');
 const chai = require('chai');
 const expect = chai.expect;
-const forecastUpdater = require('../forecastUpdater'); 
+const forecastUpdater = require('../routes/weather'); 
 
 describe('Forecast Updater', () => {
     let fetchLocationsStub;
