@@ -71,13 +71,6 @@ app.get('/contactUs', (req, res) => {
 app.get('/map',(req,res)=>{
     res.render('mapPage', {title: 'Map'});
 });
-app.get('/eduRes',(req,res)=>{
-    res.render('eduRes', {title: 'eduRes'});
-});
-app.get('/fav',(req,res)=>{
-    res.render('fav', {title: 'fav'});
-});
-
 
 app.get('/admin', (req, res) => {
     res.render('admin', { title: 'Admin Page' }); 
@@ -85,6 +78,10 @@ app.get('/admin', (req, res) => {
 
 app.get('/userPref', (req, res) => {
     res.render('userPref', { title: 'User Preferences Page' }); 
+});
+
+app.get('/historicalWeatherData', (req, res) => {
+    res.render('historicalWeatherData', { title: 'Historical Weather Data' }); 
 });
 
 // SIGINT handler

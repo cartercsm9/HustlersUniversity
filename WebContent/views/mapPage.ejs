@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="cosc310map.css">
-
+    <link rel="stylesheet" href="css/cosc310map.css">
+    <link rel="stylesheet" href="css/style.css">
+    
     <title>World Map</title>
     <style>
         #map {
@@ -17,68 +18,37 @@
             padding: 10px;
             font-size: 16px;
         }
+        h1{
+            display: inline;
+            color: white;
+        }
     </style>
 </head>
 <body>
-    <header>
+    <div class="top-bar">
+    <header class="header-search-container">
         <h1>Weather Tracker</h1>
+        <input type="text" id="search-box" placeholder="Search for a location">
     </header>
-    <input type="text" id="search-box" placeholder="Search for a location">
+    <div id="pointerWeather"></div>
+    </div>
+    
     <div id="map"></div>
 
+    
+    <script src="/weathertest.js"></script>
+    <script src="/map.js"></script>
     <script>
-        function initMap() {
-            const map = new google.maps.Map(document.getElementById('map'), {
-                center: {lat: 0, lng: 0},
-                zoom: 2
-            });
-
-            const input = document.getElementById('search-box');
-            const searchBox = new google.maps.places.SearchBox(input);
-
-            map.addListener('bounds_changed', () => {
-                searchBox.setBounds(map.getBounds());
-            });
-
-            let markers = [];
-
-            searchBox.addListener('places_changed', () => {
-                const places = searchBox.getPlaces();
-
-                if (places.length == 0) {
-                    return;
-                }
-
-                markers.forEach((marker) => {
-                    marker.setMap(null);
-                });
-                markers = [];
-
-                const bounds = new google.maps.LatLngBounds();
-                places.forEach((place) => {
-                    if (!place.geometry) {
-                        console.log("Returned place contains no geometry");
-                        return;
-                    }
-                    const marker = new google.maps.Marker({
-                        map,
-                        title: place.name,
-                        position: place.geometry.location,
-                    });
-                    markers.push(marker);
-
-                    if (place.geometry.viewport) {
-                        bounds.union(place.geometry.viewport);
-                    } else {
-                        bounds.extend(place.geometry.location);
-                    }
-                });
-                map.fitBounds(bounds);
-            });
-        }
+    function loadGoogleMapsAPI() {
+        var script = document.createElement('script');
+        script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyBXVw7X4ZqC2STyVwNruedgvImMAdDOeJo&libraries=places&callback=initMap';
+        script.async = true;
+        script.defer = true;
+        document.head.appendChild(script);
+    }
+    
+    // Assuming initMap is defined above or elsewhere in the global scope
+    loadGoogleMapsAPI();
     </script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBXVw7X4ZqC2STyVwNruedgvImMAdDOeJo&libraries=places&callback=initMap" async defer></script>
-    <script src="mapPage.js"></script>
-
 </body>
 </html>

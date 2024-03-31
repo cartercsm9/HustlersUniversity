@@ -50,14 +50,18 @@ router.post('/insertForecast', async (req, res) => {
         if (weatherData && weatherData.forecast && weatherData.forecast.forecastday) {
             await Promise.all(weatherData.forecast.forecastday.map(forecastDay => {
                 const city = cityName;
-                // Append " 15:30:00" to the forecast date to represent 3:30 PM
-                const forecast_date_time = `${forecastDay.date} 15:30:00`;
+                const forecast_date = forecastDay.date; // Use just the date for simplicity
                 const temperature = forecastDay.day.maxtemp_c;
                 const weather_description = forecastDay.day.condition.text;
                 const icon = forecastDay.day.condition.icon;
-                const sql = 'INSERT INTO weather_data (city, forecast_date, temperature, weather_description, icon) VALUES (?, ?, ?, ?, ?)';
-                const values = [city, forecast_date_time, temperature, weather_description, icon];
-        
+                const humidity = forecastDay.day.avghumidity;
+                const wind_speed = forecastDay.day.maxwind_kph;
+                // Add any additional fields you're interested in here
+
+                const sql = 'INSERT INTO weather_data (city, forecast_date, temperature, weather_description, icon, humidity, wind_speed) VALUES (?, ?, ?, ?, ?, ?, ?)';
+                const values = [city, forecast_date, temperature, weather_description, icon, humidity, wind_speed];
+                // Add any additional fields to the values array
+
                 return new Promise((resolve, reject) => {
                     db.query(sql, values, (err, result) => {
                         if (err) return reject(err);
@@ -86,11 +90,13 @@ router.get('/queryWeatherByCity', async (req, res) => {
             forecast_date, 
             temperature, 
             weather_description,
-            icon
+            icon,
+            humidity,
+            wind_speed
         FROM weather_data
-        WHERE forecast_date >= CURRENT_DATE;
+        WHERE forecast_date >= CURRENT_DATE AND city = ?;
         `;
-    db.query(sql, [cityName, cityName, cityName], (err, result) => { // cityName is repeated for each placeholder
+    db.query(sql, [cityName], (err, result) => {
         if (err) {
             console.error("Database query error:", err);
             res.status(500).json({ error: "Error querying weather data." });
@@ -99,6 +105,65 @@ router.get('/queryWeatherByCity', async (req, res) => {
         }
     });
 });
+
+router.post('/getWeatherByCoor', async (req, res) => {
+    const { latitude, longitude } = req.body;
+
+        // Fetch weather data using the coordinates
+        const weatherUrl = `https://api.weatherapi.com/v1/current.json?key=${WEATHER_API_KEY}&q=${latitude},${longitude}`;
+        const weatherResponse = await fetch(weatherUrl);
+        const weatherData = await weatherResponse.json();
+        console.log(weatherData);
+
+        res.json(weatherData);
+});
+
+router.post('/removeEntry', (req, res) => {
+    const weather_id = req.body.weather_id;
+
+    // Delete the entry from the database
+    db.query('DELETE FROM weather_data WHERE weather_id = ?', [weather_id], (err, result) => {
+        if (err) {
+            console.error('Error deleting entry: ' + err.stack);
+            // Consider using flash messages for error handling
+            // res.flash('error', 'Error deleting entry');
+            res.redirect('/users/admin'); // Redirect even in case of error
+        } else {
+            console.log('Entry deleted with id: ' + weather_id);
+            // Optionally use flash messages for success message
+            // res.flash('success', 'Entry deleted successfully');
+            res.redirect('/users/admin');
+        }
+    });
+});
+
+// Define route to fetch historical weather data
+router.get('/grabOldWeather', async (req, res) => {
+    console.log('Request received to fetch historical weather data');
+
+    const query = `SELECT forecast_date, city, temperature, weather_description 
+                   FROM weather_data 
+                   WHERE forecast_date < CURDATE()`;
+
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Error fetching historical weather data:', err);
+            res.status(500).send('Error fetching historical weather data');
+        } else {
+            console.log('Sending historical weather data:', results);
+
+            if (results.length === 0) {
+                console.log('No historical weather data found'); // Debug statement
+                res.status(404).json({ error: 'No historical weather data found' });
+            } else {
+                res.json(results); // Send the fetched data as JSON response
+            }
+        }
+    });
+});
+
+
+
 
 
 
