@@ -215,5 +215,13 @@ cron.schedule('0 1 * * *', () => {
 router.fetchLocations = fetchLocations;
 router.insertForecastForAllCities = insertForecastForAllCities;
 
+// At the end of your weather.js file
+module.exports = {
+    router,
+    fetchLocations,
+    insertForecastData,
+    insertForecastForAllCities
+};
+
 // Export the router
 module.exports = router;

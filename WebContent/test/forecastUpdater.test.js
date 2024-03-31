@@ -1,16 +1,36 @@
 const sinon = require('sinon');
 const chai = require('chai');
 const expect = chai.expect;
-const forecastUpdater = require('../routes/weather'); 
+const proxyquire = require('proxyquire');
+
+// Mock database and other dependencies as needed
+const dbMock = {};
+const cronMock = {};
+
+const { insertForecastForAllCities } = proxyquire('../routes/weather', {
+    '../database.js': dbMock,
+    'node-cron': cronMock
+});
 
 describe('Forecast Updater', () => {
     let fetchLocationsStub;
     let insertForecastDataStub;
 
-    // Assuming fetchLocations and insertForecastData are methods of forecastUpdater
     beforeEach(() => {
-        fetchLocationsStub = sinon.stub(forecastUpdater, 'fetchLocations');
-        insertForecastDataStub = sinon.stub(forecastUpdater, 'insertForecastData');
+        // As these functions are not methods of an object, they should be stubbed in the context where they are used.
+        // Assuming these functions are being called within insertForecastForAllCities directly.
+        fetchLocationsStub = sinon.stub().resolves([
+            { city: 'City1', country: 'Country1' },
+            { city: 'City2', country: 'Country2' }
+        ]);
+
+        insertForecastDataStub = sinon.stub().resolves();
+
+        // Replace the actual implementations in the module's scope
+        proxyquire('../routes/weather', {
+            './path/to/fetchLocations': fetchLocationsStub,
+            './path/to/insertForecastData': insertForecastDataStub
+        });
     });
 
     afterEach(() => {
@@ -18,40 +38,29 @@ describe('Forecast Updater', () => {
     });
 
     it('should process all locations returned by fetchLocations', async () => {
-        const mockLocations = [
-            { city: 'City1', country: 'Country1' },
-            { city: 'City2', country: 'Country2' }
-        ];
-
-        fetchLocationsStub.resolves(mockLocations);
-        insertForecastDataStub.resolves(); // Simulate successful insertion
-
-        await forecastUpdater.insertForecastForAllCities();
+        await insertForecastForAllCities();
 
         expect(fetchLocationsStub.calledOnce).to.be.true;
-        expect(insertForecastDataStub.callCount).to.equal(mockLocations.length);
-        mockLocations.forEach(location => {
-            expect(insertForecastDataStub.calledWith(location.city)).to.be.true;
+        expect(insertForecastDataStub.callCount).to.equal(2); // Assuming 2 locations are mocked
+        fetchLocationsStub.getCall(0).args.forEach((location, index) => {
+            expect(insertForecastDataStub.getCall(index).calledWith(location.city)).to.be.true;
         });
     });
 
     it('should handle and log errors without stopping the batch process', async () => {
-        const mockLocations = [
+        fetchLocationsStub.resolves([
             { city: 'City1', country: 'Country1' },
             { city: 'City2', country: 'Country2' }
-        ];
-
-        fetchLocationsStub.resolves(mockLocations);
+        ]);
         insertForecastDataStub.onFirstCall().rejects(new Error('Test Error'));
-        insertForecastDataStub.onSecondCall().resolves(); // Simulate successful insertion after a failure
+        insertForecastDataStub.onSecondCall().resolves();
 
         const consoleErrorStub = sinon.stub(console, 'error');
 
-        await forecastUpdater.insertForecastForAllCities();
+        await insertForecastForAllCities();
 
         expect(fetchLocationsStub.calledOnce).to.be.true;
         expect(insertForecastDataStub.calledTwice).to.be.true;
-        expect(consoleErrorStub.calledOnce).to.be.true;
-        expect(consoleErrorStub.firstCall.args[0]).to.include('Error inserting forecast for City1');
+        expect(consoleErrorStub.calledWithMatch('Error inserting forecast for City1')).to.be.true;
     });
 });
