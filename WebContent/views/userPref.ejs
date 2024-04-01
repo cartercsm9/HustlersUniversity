@@ -7,12 +7,12 @@
   <title>SET YOUR PREFERENCES</title>
 </head>
 <body>
-  <h1>SET YOUR PREFERENCES</h1>
-  <form action="/submit-preferences" method="post">
-    <div style="text-align: center;">
-      <label for="location">Preferred Location:</label><br>
-      <input type="text" id="location" name="location"><br><br>
-    </div>
+    <h1>SET YOUR PREFERENCES</h1>
+    <form action="/users/userPref" method="post">
+        <div style="text-align: center;">
+            <label for="location">Preferred Location:</label><br>
+            <input type="text" id="location" name="preferredCity"><br><br> 
+        </div>
 
     <div style="text-align: left;">
       <label for="temperature">Preferred Temperature Unit:</label><br>
@@ -39,9 +39,9 @@
     <option value="Arabic">Arabic</option>
   </select>
 
-  <div style="text-align: center;">
-    <input type="submit" value="Save Prefrences">
-    </div>
-  </form>
+        <div style="text-align: center;">
+            <input type="submit" value="Save Preferences">
+        </div>
+    </form>
 </body>
 </html>
