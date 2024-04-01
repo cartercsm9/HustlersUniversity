@@ -58,6 +58,10 @@ app.get('/aboutUs',(req,res)=>{
     res.render('aboutUs', {title: 'About Us Page'});
 });
 
+app.get('/userPref',(req,res)=>{
+    res.render('userPref', {title: 'User Preference Page'});
+});
+
 
 // SIGINT handler
 process.on('SIGINT', () => {
