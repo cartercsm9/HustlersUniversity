@@ -50,6 +50,15 @@ app.get('/map',(req,res)=>{
     res.render('mapPage', {title: 'Map'});
 });
 
+app.get('/contactUs',(req,res)=>{
+    res.render('contactUs', {title: 'Contact Us Page'});
+});
+
+app.get('/aboutUs',(req,res)=>{
+    res.render('aboutUs', {title: 'About Us Page'});
+});
+
+
 // SIGINT handler
 process.on('SIGINT', () => {
     db.end((err) => {
