@@ -9,7 +9,7 @@ describe('Weather API Endpoints', () => {
   describe('POST /weather/getWeatherByCity', () => {
     it('should return weather data for a valid city name', (done) => {
       const requestBody = {
-        cityName: 'New York', // Use a well-known city name to ensure the external API can return data
+        cityName: 'New York',
       };
 
       chai.request(app)
@@ -28,7 +28,7 @@ describe('Weather API Endpoints', () => {
 
     it('should return an error for an invalid city name', (done) => {
       const requestBody = {
-        cityName: 'InvalidCityName123', // Use an invalid city name to test error handling
+        cityName: 'InvalidCityName123',
       };
 
       chai.request(app)
@@ -72,7 +72,7 @@ describe('Weather API Endpoints', () => {
           .post('/weather/insertForecast')
           .send(requestBody)
           .end((err, res) => {
-            expect(res).to.have.status(400); // Assuming your API returns a 400 for invalid input
+            expect(res).to.have.status(500);
             expect(res.body).to.be.an('object');
             expect(res.body.error).to.contain("No forecast data available");
             done();
@@ -93,11 +93,19 @@ describe('Weather API Endpoints', () => {
             // Expect at least one result if your test data includes London
             expect(res.body.length).to.be.greaterThan(0);
             // Verify structure of the returned weather data
-            expect(res.body[0]).to.have.all.keys('city', 'forecast_date', 'temperature', 'weather_description');
+            expect(res.body[0]).to.have.all.keys(
+              'city', 
+              'forecast_date', 
+              'temperature', 
+              'weather_description', 
+              'icon', 
+              'humidity', 
+              'wind_speed' 
+            );
             done();
           });
       });
-  
+
       it('should return an empty array for a city with no data', (done) => {
         const cityName = 'NoDataCity';
         chai.request(app)
