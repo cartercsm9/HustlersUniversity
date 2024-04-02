@@ -111,58 +111,67 @@ async function getCurrForecast(cityName) {
         });
 
         // Then, query the inserted data
-        const queryResponse = await fetch(`/weather/queryWeatherByCity?cityName=${encodeURIComponent(cityName)}`);
+        const timezoneOffset = new Date().getTimezoneOffset();
+        const queryResponse = await fetch(`/weather/queryWeatherByCity?cityName=${encodeURIComponent(cityName)}&timezoneOffset=${timezoneOffset}`);
         const queriedData = await queryResponse.json();
-        if (document.getElementById('weatherForecast')) {
-            document.getElementById('weatherForecast').innerHTML = `
-                <div class="weather-city">${cityName}</div>
-                <div class="weather-forecasts">
-                    ${queriedData.map(data => `
-                        <div class="weather-forecast-entry">
-                            <span class="forecast-date">${getDayOfWeek(data.forecast_date)}</span>
-                            <span class="forecast-temperature">${data.temperature}°C</span>
-                            <img class="forecast-description" src="${data.icon}"></img>
-                        </div>
-                    `).join('')}
-                </div>`;
-        } else if (document.getElementById('forecast') && queriedData.length > 0) {
-            let today = queriedData[0];
-            let tomorrow = queriedData[1];
-            let third = queriedData[2];
 
-            document.getElementById('forecast').innerHTML= `
-                <h1>${today.city}</h1>
-                <div class="today">
-                    <h2>Today</h2>
-                    <h2>${today.temperature}°C</h2>
-                    <img src="${today.icon}" alt="Weather Forecast" width="100">
-                    <p>Humidity: ${today.humidity}%</p>
-                    <p>Wind Speed: ${today.wind_speed} kph </p>
-                </div>
-                <div class="tomorrow">
-                    <h2>Tomorrow</h2>
-                    <h2>${tomorrow.temperature}°C</h2>
-                    <img src="${tomorrow.icon}" alt="Weather Forecast" width="100">
-                    <p>Humidity: ${tomorrow.humidity}%</p>
-                    <p>Wind Speed: ${tomorrow.wind_speed} kph </p>
-                </div>
-                <div class="today">
-                    <h2>${getDayOfWeek(third.forecast_date)}</h2>
-                    <h2>${third.temperature}°C</h2>
-                    <img src="${third.icon}" alt="Weather Forecast" width="100">
-                    <p>Humidity: ${third.humidity}%</p>
-                    <p>Wind Speed: ${third.wind_speed} kph </p>
-                </div>
-            `;
+        // Ensure that the data is available and correctly structured
+        if (queriedData && queriedData.length > 0) {
+            if (document.getElementById('weatherForecast')) {
+                document.getElementById('weatherForecast').innerHTML = `
+                    <div class="weather-city">${cityName}</div>
+                    <div class="weather-forecasts">
+                        ${queriedData.map(data => `
+                            <div class="weather-forecast-entry">
+                                <span class="forecast-date">${getDayOfWeek(data.forecast_date)}</span>
+                                <span class="forecast-temperature">${data.temperature}°C</span>
+                                <img class="forecast-description" src="${data.icon}"></img>
+                            </div>
+                        `).join('')}
+                    </div>`;
+            }
+            if (document.getElementById('forecast')) {
+                let today = queriedData.find(data => getDayOfWeek(data.forecast_date) === 'Today') || queriedData[0];
+                let tomorrow = queriedData.find(data => getDayOfWeek(data.forecast_date) === 'Tomorrow') || queriedData[1] || {};
+                let third = queriedData[2] || {};
+                document.getElementById('forecast').innerHTML= `
+                    <h1>${today.city}</h1>
+                    <div class="today">
+                        <h2>Today</h2>
+                        <h2>${today.temperature}°C</h2>
+                        <img src="${today.icon}" alt="Weather Forecast" width="100">
+                        <p>Humidity: ${today.humidity}%</p>
+                        <p>Wind Speed: ${today.wind_speed} kph </p>
+                    </div>
+                    <div class="tomorrow">
+                        <h2>Tomorrow</h2>
+                        <h2>${tomorrow.temperature}°C</h2>
+                        <img src="${tomorrow.icon}" alt="Weather Forecast" width="100">
+                        <p>Humidity: ${tomorrow.humidity}%</p>
+                        <p>Wind Speed: ${tomorrow.wind_speed} kph </p>
+                    </div>
+                    <div class="today">
+                        <h2>${getDayOfWeek(third.forecast_date)}</h2>
+                        <h2>${third.temperature}°C</h2>
+                        <img src="${third.icon}" alt="Weather Forecast" width="100">
+                        <p>Humidity: ${third.humidity}%</p>
+                        <p>Wind Speed: ${third.wind_speed} kph </p>
+                    </div>
+                `;
+            }
+        } else {
+            console.log("No forecast data available or invalid response.");
+            throw new Error("No forecast data available or invalid response.");
         }
-
-       
-
     } catch (error) {
         console.error('Error:', error);
-        document.getElementById('weatherForecast').textContent = 'Failed to fetch weather data.';
+        let weatherForecastElement = document.getElementById('weatherForecast');
+        if (weatherForecastElement) {
+            weatherForecastElement.textContent = 'Failed to fetch weather data.';
+        }
     }
 }
+
 
 function getDayOfWeek(dateString) {
     const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];

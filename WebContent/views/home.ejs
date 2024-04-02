@@ -4,6 +4,20 @@
     <meta charset="utf-8">
     <title>Weather Dashboard</title>
     <link rel="stylesheet" href="css/style.css">
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check if the user's agreement is stored in localStorage
+            let userAgreed = localStorage.getItem('userAgreed');
+
+            // If not, ask for permission and store the response
+            if (userAgreed === null) {
+                userAgreed = window.confirm("We need your location to provide local weather information. Do you allow us to access your location?");
+                localStorage.setItem('userAgreed', userAgreed);
+            }
+
+            requestUserLocation(userAgreed);
+        });
+    </script>
 </head>
 <body>
     <header>
@@ -51,7 +65,7 @@
                 <a href="/forecast" class="panel-link">Forecast Search</a>
             </div>
             <div class="panel">
-                <a href="/historyPage" class="panel-link">Historical Data</a>
+                <a href="/history" class="panel-link">Historical Data</a>
             </div>
             <div class="panel">
                 <a href="/map" class="panel-link">Map</a>
@@ -70,11 +84,5 @@
     <script src="/noti-helper.js"></script>
     <script src="/weathertest.js"></script>
     <script src="/getCurrentLocation.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', (event) => {
-            requestUserLocation();
-        });
-    </script>
-        
 </body>  
 </html>

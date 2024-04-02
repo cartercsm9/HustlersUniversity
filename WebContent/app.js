@@ -37,7 +37,6 @@ app.get('/notifications', (req, res) => {
 const userRoutes = require('./routes/users.js');
 app.use('/users', userRoutes);
 const weatherRoutes = require('./routes/weather');
-const { fetchLocations } = require('./routes/weather');
 app.use('/weather', weatherRoutes);
 
 // Configure EJS as the view engine
@@ -87,7 +86,7 @@ app.get('/userPref',(req,res)=>{
     res.render('userPref', {title: 'User Preferences'});
 });
 app.get('/historyPage',(req,res)=>{
-    res.render('historyPage', {title: 'Historical Data'});
+    res.render('historicalWeatherData', {title: 'Historical Data'});
 });
 
 app.get('/userPref', (req, res) => {

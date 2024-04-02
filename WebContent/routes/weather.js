@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../database.js');
-const cron = require('node-cron');
 const WEATHER_API_KEY = process.env.WEATHER_API_KEY;
 const GEOCODING_API_KEY = process.env.GEOCODING_API_KEY;
 
@@ -57,7 +56,17 @@ async function insertForecastData(cityName) {
                 const humidity = forecastDay.day.avghumidity;
                 const wind_speed = forecastDay.day.maxwind_kph;
 
-                const sql = 'INSERT INTO weather_data (city, country, forecast_date, temperature, weather_description, icon, humidity, wind_speed) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+                const sql = `
+                  INSERT INTO weather_data 
+                  (city, country, forecast_date, temperature, weather_description, icon, humidity, wind_speed) 
+                  VALUES (?, ?, ?, ?, ?, ?, ?, ?) 
+                  ON DUPLICATE KEY UPDATE 
+                  temperature = VALUES(temperature), 
+                  weather_description = VALUES(weather_description), 
+                  icon = VALUES(icon), 
+                  humidity = VALUES(humidity), 
+                  wind_speed = VALUES(wind_speed);
+                `;
                 const values = [city, country, forecast_date, temperature, weather_description, icon, humidity, wind_speed];
                 
                 return new Promise((resolve, reject) => {
@@ -77,6 +86,7 @@ async function insertForecastData(cityName) {
         throw error; // Rethrow or handle as needed
     }
 }
+
 
 // Endpoint to handle city name submission and respond with weather forecast data
 router.post('/insertForecast', async (req, res) => {
@@ -106,7 +116,15 @@ const insertForecastForAllCities = async () => {
 
 // Endpoint to query weather data by city name
 router.get('/queryWeatherByCity', async (req, res) => {
-    const { cityName } = req.query;
+    const { cityName, timezoneOffset } = req.query;
+    
+    // Calculate the local time of the client based on the provided timezone offset
+    const now = new Date();
+    const clientLocalTime = new Date(now.getTime() - (timezoneOffset * 60000)); // convert minutes to milliseconds
+    const currentDate = clientLocalTime.toISOString().split('T')[0];
+    
+    console.log(currentDate);
+
     const sql = `
         SELECT DISTINCT 
             city, 
@@ -117,9 +135,11 @@ router.get('/queryWeatherByCity', async (req, res) => {
             humidity,
             wind_speed
         FROM weather_data
-        WHERE forecast_date >= CURRENT_DATE AND city = ?;
-        `;
-    db.query(sql, [cityName], (err, result) => {
+        WHERE forecast_date >= ? AND city = ?;
+    `;
+
+    // Pass the current date and city name as parameters to the query
+    db.query(sql, [currentDate, cityName], (err, result) => {
         if (err) {
             console.error("Database query error:", err);
             res.status(500).json({ error: "Error querying weather data." });
@@ -128,6 +148,7 @@ router.get('/queryWeatherByCity', async (req, res) => {
         }
     });
 });
+
 
 router.post('/getWeatherByCoor', async (req, res) => {
     const { latitude, longitude } = req.body;
@@ -185,10 +206,35 @@ router.get('/grabOldWeather', async (req, res) => {
     });
 });
 
+// Endpoint to query weather data by city name
+router.get('/queryHistoryByCity', async (req, res) => {
+    const { cityName } = req.query;
+    const sql = `
+        SELECT DISTINCT 
+            city, 
+            forecast_date, 
+            temperature,
+            humidity,
+            wind_speed
+        FROM weather_data
+        WHERE city = ?;
+    `;
+
+    // Pass the current date and city name as parameters to the query
+    db.query(sql, [cityName], (err, result) => {
+        if (err) {
+            console.error("Database query error:", err);
+            res.status(500).json({ error: "Error querying weather data." });
+        } else {
+            res.json(result);
+        }
+    });
+});
+
 // get current locations
 const fetchLocations = () => {
     return new Promise((resolve, reject) => {
-        const query = `SELECT DISTINCT city, country FROM weather_data`;
+        const query = `SELECT DISTINCT city, country FROM weather_data ORDER BY city ASC`;
         db.query(query, (err, results) => {
             if (err) {
                 console.error('Error fetching locations:', err);
@@ -199,17 +245,6 @@ const fetchLocations = () => {
         });
     });
 };
-
-
-
-
-cron.schedule('0 1 * * *', () => {
-    console.log('Running scheduled task to insert forecast for all cities');
-    insertForecastForAllCities();
-});
-
-
-
 
 //data export
 router.fetchLocations = fetchLocations;
