@@ -42,7 +42,6 @@ const windSpeedData = {
     }]
 };
 
-// Create charts using the specific data objects
 const tempChart = new Chart("tempChart", {
     type: 'line',
     data: tempData,
