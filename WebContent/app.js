@@ -52,6 +52,9 @@ app.get('/map',(req,res)=>{
 app.get('/userPref',(req,res)=>{
     res.render('userPref', {title: 'User Preferences'});
 });
+app.get('/historyPage',(req,res)=>{
+    res.render('historyPage', {title: 'Historical Data'});
+});
 
 // SIGINT handler
 process.on('SIGINT', () => {
