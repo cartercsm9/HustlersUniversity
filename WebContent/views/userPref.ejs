@@ -8,7 +8,7 @@
 </head>
 <body>
     <h1>SET YOUR PREFERENCES</h1>
-    <form action="/users/userPref" method="post">
+    <form id="preferencesForm" action="/users/userPref" method="post" onsubmit="showConfirmation(event)">
         <div style="text-align: center;">
             <label for="location">Preferred Location:</label><br>
             <input type="text" id="location" name="preferredCity"><br><br> 
@@ -26,7 +26,6 @@
 
         <label for="name">Name:</label><br>
         <input type="text" id="name" name="userId"><br><br> 
-
         <div style="text-align: left;">
             <label for="phone">Phone Number(Daily Weather Notifications):</label><br>
             <input type="tel" id="phone" name="phone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" style="width: 80%;"><br><br>
@@ -43,5 +42,18 @@
             <input type="submit" value="Save Preferences">
         </div>
     </form>
+
+    <div id="confirmation" style="display: none; text-align: center;"></div>
+
+    <script>
+        function showConfirmation(event) {
+            event.preventDefault();
+    
+            document.getElementById('preferencesForm').style.display = 'none';
+    
+            document.getElementById('confirmation').innerHTML = 'Your preferences are saved!';
+            document.getElementById('confirmation').style.display = 'block';
+        }
+    </script>
 </body>
 </html>

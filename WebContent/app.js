@@ -103,6 +103,19 @@ app.get('/historyPage', (req, res) => {
     res.render('historyPage', { title: 'History Page' }); 
 });
 
+app.get('/aboutUs',(req,res)=>{
+    res.render('aboutUs', {title: 'About Us Page'});
+});
+
+app.get('/contactUs',(req,res)=>{
+    res.render('contactUs', {title: 'Contact Us Page'});
+});
+
+app.get('/userPref',(req,res)=>{
+    res.render('userPref', {title: 'User Preference Page'});
+});
+
+
 // SIGINT handler
 process.on('SIGINT', () => {
     db.end((err) => {
