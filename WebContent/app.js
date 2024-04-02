@@ -1,4 +1,3 @@
-
 require('dotenv').config(); // Load environment variables from .env file
 const express = require('express');
 const path = require('path');
@@ -6,6 +5,8 @@ const session = require('express-session'); // Import express-session for sessio
 const db = require('./database.js');
 const app = express();
 
+app.use(express.static('public'));
+app.use(express.static('js'));
 
 // Middleware for parsing JSON and URL-encoded data
 app.use(express.json());
@@ -18,9 +19,20 @@ app.use(session({
   saveUninitialized: true
 }));
 
-
-
-
+const notifications = require('./routes/notifications.js');
+app.use('/notifications', notifications);
+// Route for sending email
+app.get('/notifications', (req, res) => {
+    sendEmail()
+      .then(() => {
+        console.log('Email sent');
+        res.send('Email sent successfully!');
+      })
+      .catch(error => {
+        console.error('Error sending email:', error);
+        res.status(500).send('Failed to send email');
+      });
+  });
 // Routes
 const userRoutes = require('./routes/users.js');
 app.use('/users', userRoutes);
@@ -32,7 +44,6 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 // Serve static files from the 'public' directory
-app.use(express.static('public'));
 
 // Routes to serve EJS files
 app.get('/', (req, res) => {
