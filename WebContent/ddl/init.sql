@@ -30,12 +30,16 @@ CREATE TABLE admins (
 CREATE TABLE weather_data (
     weather_id INT AUTO_INCREMENT PRIMARY KEY,
     city VARCHAR(255) NOT NULL,
+    country VARCHAR(255) NOT NULL,
     forecast_date DATE NOT NULL DEFAULT (CURRENT_DATE),
     temperature DECIMAL(5, 2) NOT NULL,
     weather_description TEXT NOT NULL,
     icon VARCHAR(255),
+    humidity DECIMAL(5, 2),
+    wind_speed DECIMAL(5, 2),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
 ALTER TABLE weather_data ADD UNIQUE(city, forecast_date);
 
 CREATE TABLE user_preferences (

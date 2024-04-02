@@ -2,6 +2,7 @@
 require('dotenv').config(); // Load environment variables from .env file
 const express = require('express');
 const path = require('path');
+const session = require('express-session'); // Import express-session for session management
 const db = require('./database.js');
 const app = express();
 
@@ -10,10 +11,21 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Session middleware setup
+app.use(session({
+  secret: 'your_secret_key', // Change this to a secure secret key
+  resave: false,
+  saveUninitialized: true
+}));
+
+
+
+
 // Routes
 const userRoutes = require('./routes/users.js');
 app.use('/users', userRoutes);
-const weatherRoutes = require('./routes/weather.js');
+const weatherRoutes = require('./routes/weather');
+const { fetchLocations } = require('./routes/weather');
 app.use('/weather', weatherRoutes);
 
 // Configure EJS as the view engine
@@ -25,13 +37,18 @@ app.use(express.static('public'));
 
 // Routes to serve EJS files
 app.get('/', (req, res) => {
-    res.render('index', { title: 'Home Page' }); // Assuming you have index.ejs
+    res.render('index', { title: 'Redirecting' }); 
     console.log('Opening index');
 });
 
 app.get('/home', (req, res) => {
-    res.render('home', { title: 'Home Page' });
+    if (req.session.loggedIn) {
+        res.render('home', { title: 'Home Page', username: req.session.username });
+    } else {
+        res.redirect('/login'); // Redirect to login page if user is not logged in
+    }
 });
+
 
 app.get('/login', (req, res) => {
     // Example of rendering without an actual error
@@ -45,9 +62,45 @@ app.get('/signup', (req, res) => {
 app.get('/forecast', (req, res) => {
     res.render('weatherPage', { title: 'Weather Forecast' });
 });
+app.get('/aboutUs', (req, res) => {
+    res.render('aboutUs', { title: 'aboutUs' });
+});
+app.get('/contactUs', (req, res) => {
+    res.render('contactUs', { title: 'contactUs' });
+});
 
 app.get('/map',(req,res)=>{
     res.render('mapPage', {title: 'Map'});
+});
+app.get('/userPref',(req,res)=>{
+    res.render('userPref', {title: 'User Preferences'});
+});
+app.get('/historyPage',(req,res)=>{
+    res.render('historyPage', {title: 'Historical Data'});
+});
+
+app.get('/userPref', (req, res) => {
+    res.render('userPref', { title: 'User Preferences Page' }); 
+});
+
+app.get('/history', async (req, res) => {
+    try {
+        const locations = await weatherRoutes.fetchLocations();
+        res.render('historyPage', { locations });        
+    } catch (error) {
+        console.error('Error fetching location:', error);
+        res.status(500).send('Error fetching location');
+    }
+});
+
+weatherRoutes.insertForecastForAllCities().then(() => {
+    console.log('Initial forecast data inserted on server startup');
+}).catch(error => {
+    console.error('Failed to insert initial forecast data on server startup:', error);
+});
+
+app.get('/historyPage', (req, res) => {
+    res.render('historyPage', { title: 'History Page' }); 
 });
 
 app.get('/aboutUs',(req,res)=>{

@@ -1,3 +1,5 @@
+/* General Styles */
+
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -6,6 +8,7 @@ body {
     flex-direction: column;
     min-height: 100vh;
 }
+/* Header Styles */
 
 header .header-container {
     text-align: right;
@@ -24,6 +27,7 @@ header .header-container {
 .login-link:hover {
     background-color: #0056b3;
 }
+/* Dashboard Styles */
 
 .dashboard {
     display: flex;
@@ -49,12 +53,15 @@ header .header-container {
     text-align: center;
 }
 
-.panel h3, .panel input[type=text], .panel button {
+.panel h3, 
+.panel input[type=text], 
+.panel button {
     margin: 10px 0;
     font-family: 'Arial', sans-serif; 
 }
 
-.panel input[type=text], .panel button {
+.panel input[type=text], 
+.panel button {
     width: calc(100% - 20px);
     padding: 10px;
     border: 1px solid #ccc;
@@ -97,6 +104,7 @@ header .header-container {
     width: 80px; 
     height: auto;
 }
+/* Weather Panel Styles */
 
 #weatherPanel {
     text-align: center;
@@ -140,6 +148,7 @@ header .header-container {
     margin-bottom: 50px;
 
 }
+/* Weather Info Styles */
 
 .weather-info {
     text-align: center;
@@ -159,12 +168,34 @@ header .header-container {
 }
 
 .weather-location, .weather-temperature, .weather-condition {
-    display: inline;
-    margin: 0 5px;
-    padding: 2px 5px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    margin: 5px;
+    padding: 8px 10px;
     background-color: #e8e8e8;
     border-radius: 4px;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    color: #333;
+}
+
+
+.weather-temperature {
+    font-weight: bold;
+    color: #E53935; /* Adds emphasis to temperature */
+}
+
+.weather-condition {
+    text-transform: capitalize; /* Ensures the weather condition looks uniform */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .weather-display {
+        flex-direction: column;
+    }
 }
 
 .weather-city {
@@ -172,6 +203,7 @@ header .header-container {
     margin-bottom: 20px;
     text-align: center;
 }
+/* Weather Forecasts Styles */
 
 .weather-forecasts {
     display: flex;
@@ -198,10 +230,6 @@ header .header-container {
 
 .forecast-date {
     font-weight: bold;
-}
-
-.forecast-temperature {
-    color: #E57373; /* Color for temperature */
 }
 
 .forecast-description {

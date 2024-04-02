@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../database.js');
+const cron = require('node-cron');
 const WEATHER_API_KEY = process.env.WEATHER_API_KEY;
 const GEOCODING_API_KEY = process.env.GEOCODING_API_KEY;
 
@@ -38,26 +39,27 @@ router.post('/getWeatherByCity', async (req, res) => {
 });
 
 
-// Endpoint to handle city name submission and respond with weather forecast data
-router.post('/insertForecast', async (req, res) => {
-    console.log('inserting weather data');
-    const { cityName } = req.body;
+// Core logic for inserting weather forecast
+async function insertForecastData(cityName) {
     try {
         const weatherUrl = `http://api.weatherapi.com/v1/forecast.json?key=${WEATHER_API_KEY}&q=${cityName}&days=3&aqi=no&alerts=yes`;
         const weatherResponse = await fetch(weatherUrl);
         const weatherData = await weatherResponse.json();
 
         if (weatherData && weatherData.forecast && weatherData.forecast.forecastday) {
-            await Promise.all(weatherData.forecast.forecastday.map(forecastDay => {
+            await Promise.all(weatherData.forecast.forecastday.map(async (forecastDay) => {
                 const city = cityName;
-                // Append " 15:30:00" to the forecast date to represent 3:30 PM
-                const forecast_date_time = `${forecastDay.date} 15:30:00`;
+                const country = weatherData.location.country;
+                const forecast_date = forecastDay.date;
                 const temperature = forecastDay.day.maxtemp_c;
                 const weather_description = forecastDay.day.condition.text;
                 const icon = forecastDay.day.condition.icon;
-                const sql = 'INSERT INTO weather_data (city, forecast_date, temperature, weather_description, icon) VALUES (?, ?, ?, ?, ?)';
-                const values = [city, forecast_date_time, temperature, weather_description, icon];
-        
+                const humidity = forecastDay.day.avghumidity;
+                const wind_speed = forecastDay.day.maxwind_kph;
+
+                const sql = 'INSERT INTO weather_data (city, country, forecast_date, temperature, weather_description, icon, humidity, wind_speed) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+                const values = [city, country, forecast_date, temperature, weather_description, icon, humidity, wind_speed];
+                
                 return new Promise((resolve, reject) => {
                     db.query(sql, values, (err, result) => {
                         if (err) return reject(err);
@@ -65,17 +67,42 @@ router.post('/insertForecast', async (req, res) => {
                     });
                 });
             }));
-            res.json({ message: "Weather data inserted successfully." });
+            return { message: "Weather data inserted successfully." };
         } else {
             console.log("No forecast data available or invalid response.");
-            res.status(400).json({ error: "No forecast data available or invalid response." });
+            throw new Error("No forecast data available or invalid response.");
         }
     } catch (error) {
-        console.error("Server error:", error);
-        res.status(500).json({ error: "Error fetching weather data." });
+        console.error("Error inserting forecast data:", error);
+        throw error; // Rethrow or handle as needed
+    }
+}
+
+// Endpoint to handle city name submission and respond with weather forecast data
+router.post('/insertForecast', async (req, res) => {
+    console.log('inserting weather data');
+    const { cityName } = req.body;
+
+    try {
+        const result = await insertForecastData(cityName);
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
 });
 
+// Function to insert forecast for all cities
+const insertForecastForAllCities = async () => {
+    const locations = await fetchLocations();
+    for (const location of locations) {
+        try {
+            console.log(`Inserting forecast for ${location.city}, ${location.country}`);
+            await insertForecastData(location.city);
+        } catch (error) {
+            console.error(`Error inserting forecast for ${location.city}, ${location.country}:`, error);
+        }
+    }
+};
 
 // Endpoint to query weather data by city name
 router.get('/queryWeatherByCity', async (req, res) => {
@@ -86,11 +113,13 @@ router.get('/queryWeatherByCity', async (req, res) => {
             forecast_date, 
             temperature, 
             weather_description,
-            icon
+            icon,
+            humidity,
+            wind_speed
         FROM weather_data
-        WHERE forecast_date >= CURRENT_DATE;
+        WHERE forecast_date >= CURRENT_DATE AND city = ?;
         `;
-    db.query(sql, [cityName, cityName, cityName], (err, result) => { // cityName is repeated for each placeholder
+    db.query(sql, [cityName], (err, result) => {
         if (err) {
             console.error("Database query error:", err);
             res.status(500).json({ error: "Error querying weather data." });
@@ -100,7 +129,99 @@ router.get('/queryWeatherByCity', async (req, res) => {
     });
 });
 
+router.post('/getWeatherByCoor', async (req, res) => {
+    const { latitude, longitude } = req.body;
 
+        // Fetch weather data using the coordinates
+        const weatherUrl = `https://api.weatherapi.com/v1/current.json?key=${WEATHER_API_KEY}&q=${latitude},${longitude}`;
+        const weatherResponse = await fetch(weatherUrl);
+        const weatherData = await weatherResponse.json();
+        console.log(weatherData);
+
+        res.json(weatherData);
+});
+
+router.post('/removeEntry', (req, res) => {
+    const weather_id = req.body.weather_id;
+
+    // Delete the entry from the database
+    db.query('DELETE FROM weather_data WHERE weather_id = ?', [weather_id], (err, result) => {
+        if (err) {
+            console.error('Error deleting entry: ' + err.stack);
+            // Consider using flash messages for error handling
+            // res.flash('error', 'Error deleting entry');
+            res.redirect('/users/admin'); // Redirect even in case of error
+        } else {
+            console.log('Entry deleted with id: ' + weather_id);
+            // Optionally use flash messages for success message
+            // res.flash('success', 'Entry deleted successfully');
+            res.redirect('/users/admin');
+        }
+    });
+});
+
+// Define route to fetch historical weather data
+router.get('/grabOldWeather', async (req, res) => {
+    console.log('Request received to fetch historical weather data');
+
+    const query = `SELECT forecast_date, city, temperature, weather_description 
+                   FROM weather_data 
+                   WHERE forecast_date < CURDATE()`;
+
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Error fetching historical weather data:', err);
+            res.status(500).send('Error fetching historical weather data');
+        } else {
+            console.log('Sending historical weather data:', results);
+
+            if (results.length === 0) {
+                console.log('No historical weather data found'); // Debug statement
+                res.status(404).json({ error: 'No historical weather data found' });
+            } else {
+                res.json(results); // Send the fetched data as JSON response
+            }
+        }
+    });
+});
+
+// get current locations
+const fetchLocations = () => {
+    return new Promise((resolve, reject) => {
+        const query = `SELECT DISTINCT city, country FROM weather_data`;
+        db.query(query, (err, results) => {
+            if (err) {
+                console.error('Error fetching locations:', err);
+                reject('Error fetching locations');
+            } else {
+                resolve(results);
+            }
+        });
+    });
+};
+
+
+
+
+cron.schedule('0 1 * * *', () => {
+    console.log('Running scheduled task to insert forecast for all cities');
+    insertForecastForAllCities();
+});
+
+
+
+
+//data export
+router.fetchLocations = fetchLocations;
+router.insertForecastForAllCities = insertForecastForAllCities;
+
+// At the end of your weather.js file
+module.exports = {
+    router,
+    fetchLocations,
+    insertForecastData,
+    insertForecastForAllCities
+};
 
 // Export the router
 module.exports = router;
