@@ -39,6 +39,9 @@ jobs:
           echo "Waiting for database connection..."
           sleep 2
         done
+        
+    - name: Ensure mocha is executable
+      run: docker exec cosc310-node chmod +x /path/to/node_modules/.bin/mocha
 
     - name: Run tests
       run: docker exec cosc310-node npm test
