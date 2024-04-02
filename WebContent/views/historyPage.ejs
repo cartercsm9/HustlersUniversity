@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Tracker History</title>
+    <link rel="stylesheet" href="historyPage.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Weather Tracker History</h1>
+    </header>
+    <main>
+        <div class="filter-buttons">
+            <button class="filter-button" data-filter="date">Date</button>
+            <button class="filter-button" data-filter="location">Location</button>
+            <button class="filter-button" data-filter="condition">Condition</button>
+        </div>
+        <div class="search-bar">
+            <input type="text" class="search-input" id="searchInput" placeholder="Search...">
+        </div>
+        <canvas id="weatherChart" width="800" height="400"></canvas>
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Location</th>
+                    <th>Temperature (°C)</th>
+                    <th>Condition</th>
+                </tr>
+            </thead>
+            <tbody id="weatherData"></tbody>
+        </table>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const response = await fetch('/weather/grabOldWeather');
+                const data = await response.json();
+                
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+
+                const weatherDataContainer = document.getElementById('weatherData');
+                data.forEach(weather => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${weather.forecast_date}</td>
+                        <td>${weather.city}</td>
+                        <td>${weather.temperature}</td>
+                        <td>${weather.weather_description}</td>
+                    `;
+                    weatherDataContainer.appendChild(row);
+                });
+
+                // Prepare data for the chart
+                const dates = data.map(weather => weather.forecast_date);
+                const temperatures = data.map(weather => weather.temperature);
+
+                // Create the chart
+                const ctx = document.getElementById('weatherChart').getContext('2d');
+                const weatherChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: dates,
+                        datasets: [{
+                            label: 'Temperature (°C)',
+                            data: temperatures,
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error fetching historical weather data:', error);
+                const errorRow = document.createElement('tr');
+                errorRow.innerHTML = `<td colspan="4">Error: ${error.message}</td>`;
+                document.getElementById('weatherData').appendChild(errorRow);
+            }
+        });
+    </script>
+</body>
+</html>

@@ -83,6 +83,10 @@ app.get('/historicalWeatherData', (req, res) => {
     res.render('historicalWeatherData', { title: 'Historical Weather Data' }); 
 });
 
+app.get('/historyPage', (req, res) => {
+    res.render('historyPage', { title: 'History Page' }); 
+});
+
 // SIGINT handler
 process.on('SIGINT', () => {
     db.end((err) => {
