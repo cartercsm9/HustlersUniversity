@@ -10,14 +10,12 @@
         <header>
             <div class="header-container">
                 <nav>
-                    <!-- Include logout link if user is logged in -->
                     <% if (username) { %>
                         <a href="/logout" class="login-link">Logout</a>
                     <% } else { %>
                         <a href="/login" class="login-link">Login</a>
                     <% } %>
                 </nav>
-                <!-- Display welcome message centered -->
                 <% if (username) { %>
                     <p class="welcome-message">Welcome <%= username %></p>
                     <a href="/users/admin" class="login-link">Admin</a>
@@ -53,7 +51,7 @@
                 <a href="/forecast" class="panel-link">Forecast Search</a>
             </div>
             <div class="panel">
-                <a href="/history" class="panel-link">Historical Data</a>
+                <a href="/historyPage" class="panel-link">Historical Data</a>
             </div>
             <div class="panel">
                 <a href="/map" class="panel-link">Map</a>

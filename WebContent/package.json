@@ -4,7 +4,7 @@
   "description": "Our project is the development of an online weather application that provides users with both current and historical weather data. The application aims to offer an intuitive and informative platform for users to access weather forecasts, historical weather patterns, and climate changes over time. This will be achieved through a user-friendly interface that simplifies the process of obtaining precise weather updates and historical data analysis.",
   "main": "index.js",
   "scripts": {
-    "test": "mocha ./test/**/*.js",
+    "test": "mocha ./test/**/*.js --exit",
     "start": "node server.js"
   },
   "keywords": [],
@@ -27,6 +27,8 @@
     "mysql2": "^3.9.2",
     "nock": "^13.5.4",
     "node-fetch": "^3.3.2",
-    "sinon": "^17.0.1"
+    "sinon": "^17.0.1",
+    "cron": "^1.8.2",
+    "proxyquire": "^2.1.3"
   }
 }
