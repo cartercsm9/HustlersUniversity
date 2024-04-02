@@ -5,6 +5,7 @@ const path = require('path');
 const session = require('express-session'); // Import express-session for session management
 const db = require('./database.js');
 const app = express();
+const cron = require('node-cron');
 
 
 // Middleware for parsing JSON and URL-encoded data
@@ -25,7 +26,6 @@ app.use(session({
 const userRoutes = require('./routes/users.js');
 app.use('/users', userRoutes);
 const weatherRoutes = require('./routes/weather');
-const { fetchLocations } = require('./routes/weather');
 app.use('/weather', weatherRoutes);
 
 // Configure EJS as the view engine
@@ -94,6 +94,10 @@ weatherRoutes.insertForecastForAllCities().then(() => {
     console.log('Initial forecast data inserted on server startup');
 }).catch(error => {
     console.error('Failed to insert initial forecast data on server startup:', error);
+});
+cron.schedule('0 1 * * *', () => {
+    console.log('Running scheduled task to insert forecast for all cities');
+    weatherRoutes.insertForecastForAllCities();
 });
 
 // SIGINT handler

@@ -12,6 +12,12 @@ header {
     width: 100%;
     margin-bottom: 20px;
 }
+h2{
+    color: #216DFF;
+    padding-top: 20px;
+    text-align: center;
+    width: 100%;
+}
 main {
     padding: 20px;
     display: flex;

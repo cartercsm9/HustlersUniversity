@@ -15,53 +15,98 @@
     </header>
     <main>
         <div class="filter-buttons">
-            <label for="locations">Choose A Location:</label>
-            <select name="country" id="country">
+            <label for="country1">Choose A Country:</label>
+            <select name="country1" id="country1">
+                <option value="">Select a Country</option>
                 <% const uniqueCountries = [...new Set(locations.map(loc => loc.country))]; %>
                 <% uniqueCountries.forEach(country => { %>
                     <option value="<%= country %>"><%= country %></option>
                 <% }); %>
             </select>
-            <select name="locations" id="locations">
+
+            <label for="location1">Choose A Location:</label>
+            <select name="location1" id="location1" onchange="chartQuery()">
+                <option value="">Select a City</option>
+                <% locations.forEach(location => { %>
+                    <option value="<%= location.city %>" data-country="<%= location.country %>"><%= location.city %></option>
+                <% }); %>
+            </select>
+            <br><br>
+            <label for="country2">Choose A Country:</label>
+            <select name="country2" id="country2">
+                <option value="">Select a Country</option>
+                <% uniqueCountries.forEach(country => { %>
+                    <option value="<%= country %>"><%= country %></option>
+                <% }); %>
+            </select>
+
+            <label for="location2">Choose A Location:</label>
+            <select name="location2" id="location2" onchange="chartQuery()">
+                <option value="">Select a City</option>
                 <% locations.forEach(location => { %>
                     <option value="<%= location.city %>" data-country="<%= location.country %>"><%= location.city %></option>
                 <% }); %>
             </select>
         </div>
-        
+
         <div class="graphs-container">
-            <div class="graph-box" id="graph-box-1"></div>
-            <div class="graph-box" id="graph-box-2"></div>
-            <div class="graph-box" id="graph-box-3"></div>
+            <h2>Temperature</h2>
+            <div class="graph-box" id="graph-box-1">
+                <canvas id="tempChart" style="width:100%;"></canvas>
+            </div>
+            <h2>Humidity</h2>
+            <div class="graph-box" id="graph-box-2">
+                <canvas id="humidityChart" style="width:100%;"></canvas>
+            </div>
+            <h2>Wind Speed</h2>
+            <div class="graph-box" id="graph-box-3">
+                <canvas id="windSpeedChart" style="width:100%;"></canvas>
+            </div>
         </div>
     </main>
 
     <script>
         $(document).ready(function() {
-            $('#country').select2();
-    
-            var originalLocations = $('#locations option').map(function() {
+            $('#country1, #country2').select2();
+            $('#location1, #location2').select2();
+
+            var originalLocations = $('#location1 option').map(function() {
                 return { city: $(this).val(), country: $(this).data('country') };
             }).get();
-    
-            $('#country').on('change', function() {
+
+            $('#country1').on('change', function() {
                 var selectedCountry = $(this).val();
-    
+
                 var filteredLocations = originalLocations.filter(function(location) {
                     return location.country === selectedCountry;
                 });
-    
-                var $locationsSelect = $('#locations').empty();
-                $.each(filteredLocations, function(index, location) {
+
+                var $locationsSelect = $('#location1').empty().append(new Option('Select a City', ''));
+                filteredLocations.forEach(function(location) {
                     $locationsSelect.append(new Option(location.city, location.city));
                 });
-    
+
                 $locationsSelect.select2();
             });
-    
-            $('#locations').select2();
+
+            $('#country2').on('change', function() {
+                var selectedCountry = $(this).val();
+
+                var filteredLocations = originalLocations.filter(function(location) {
+                    return location.country === selectedCountry;
+                });
+
+                var $locationsSelect = $('#location2').empty().append(new Option('Select a City', ''));
+                filteredLocations.forEach(function(location) {
+                    $locationsSelect.append(new Option(location.city, location.city));
+                });
+
+                $locationsSelect.select2();
+            });
         });
     </script>
-     
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/charts.js"></script>
 </body>
 </html>
