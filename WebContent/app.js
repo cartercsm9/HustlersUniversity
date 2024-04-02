@@ -24,7 +24,8 @@ app.use(session({
 // Routes
 const userRoutes = require('./routes/users.js');
 app.use('/users', userRoutes);
-const weatherRoutes = require('./routes/weather.js');
+const weatherRoutes = require('./routes/weather');
+const { fetchLocations } = require('./routes/weather');
 app.use('/weather', weatherRoutes);
 
 // Configure EJS as the view engine
@@ -79,8 +80,20 @@ app.get('/userPref', (req, res) => {
     res.render('userPref', { title: 'User Preferences Page' }); 
 });
 
-app.get('/historicalWeatherData', (req, res) => {
-    res.render('historicalWeatherData', { title: 'Historical Weather Data' }); 
+app.get('/history', async (req, res) => {
+    try {
+        const locations = await weatherRoutes.fetchLocations();
+        res.render('historyPage', { locations });        
+    } catch (error) {
+        console.error('Error fetching location:', error);
+        res.status(500).send('Error fetching location');
+    }
+});
+
+weatherRoutes.insertForecastForAllCities().then(() => {
+    console.log('Initial forecast data inserted on server startup');
+}).catch(error => {
+    console.error('Failed to insert initial forecast data on server startup:', error);
 });
 
 app.get('/historyPage', (req, res) => {

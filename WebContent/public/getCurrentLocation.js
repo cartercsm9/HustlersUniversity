@@ -62,4 +62,4 @@ function getCityName(latitude, longitude) {
 
 
 
-// module.exports.getCityName = getCityName;
+module.exports.getCityName = getCityName;
