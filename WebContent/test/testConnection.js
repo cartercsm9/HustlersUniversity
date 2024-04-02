@@ -3,7 +3,7 @@ const sinon = require('sinon');
 const axios = require('axios');
 const expect = chai.expect;
 
-const { getCityName } = require('../public/getCurrentLocation.js'); // Adjust the path as needed
+const { getCityName } = require('../public/getCurrentLocation.js'); 
 
 describe('getCityName Function', function() {
     this.timeout(10000);

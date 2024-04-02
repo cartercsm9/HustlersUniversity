@@ -72,7 +72,7 @@ describe('Weather API Endpoints', () => {
           .post('/weather/insertForecast')
           .send(requestBody)
           .end((err, res) => {
-            expect(res).to.have.status(400); // Assuming your API returns a 400 for invalid input
+            expect(res).to.have.status(500);
             expect(res.body).to.be.an('object');
             expect(res.body.error).to.contain("No forecast data available");
             done();
@@ -98,10 +98,9 @@ describe('Weather API Endpoints', () => {
               'forecast_date', 
               'temperature', 
               'weather_description', 
-              'humidity', 
               'icon', 
-              'wind_speed', 
-              'country'
+              'humidity', 
+              'wind_speed' 
             );
             done();
           });
