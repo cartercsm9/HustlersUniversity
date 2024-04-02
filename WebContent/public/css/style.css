@@ -1,3 +1,5 @@
+/* General Styles */
+
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -6,6 +8,7 @@ body {
     flex-direction: column;
     min-height: 100vh;
 }
+/* Header Styles */
 
 header .header-container {
     text-align: right;
@@ -24,6 +27,7 @@ header .header-container {
 .login-link:hover {
     background-color: #0056b3;
 }
+/* Dashboard Styles */
 
 .dashboard {
     display: flex;
@@ -49,12 +53,15 @@ header .header-container {
     text-align: center;
 }
 
-.panel h3, .panel input[type=text], .panel button {
+.panel h3, 
+.panel input[type=text], 
+.panel button {
     margin: 10px 0;
     font-family: 'Arial', sans-serif; 
 }
 
-.panel input[type=text], .panel button {
+.panel input[type=text], 
+.panel button {
     width: calc(100% - 20px);
     padding: 10px;
     border: 1px solid #ccc;
@@ -97,6 +104,7 @@ header .header-container {
     width: 80px; 
     height: auto;
 }
+/* Weather Panel Styles */
 
 #weatherPanel {
     text-align: center;
@@ -140,6 +148,7 @@ header .header-container {
     margin-bottom: 50px;
 
 }
+/* Weather Info Styles */
 
 .weather-info {
     text-align: center;
@@ -194,6 +203,7 @@ header .header-container {
     margin-bottom: 20px;
     text-align: center;
 }
+/* Weather Forecasts Styles */
 
 .weather-forecasts {
     display: flex;
