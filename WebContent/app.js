@@ -4,7 +4,6 @@ const path = require('path');
 const session = require('express-session'); // Import express-session for session management
 const db = require('./database.js');
 const app = express();
-const cron = require('node-cron');
 
 app.use(express.static('public'));
 app.use(express.static('js'));
@@ -87,7 +86,7 @@ app.get('/userPref',(req,res)=>{
     res.render('userPref', {title: 'User Preferences'});
 });
 app.get('/historyPage',(req,res)=>{
-    res.render('historyPage', {title: 'Historical Data'});
+    res.render('historicalWeatherData', {title: 'Historical Data'});
 });
 
 app.get('/userPref', (req, res) => {
@@ -108,10 +107,6 @@ weatherRoutes.insertForecastForAllCities().then(() => {
     console.log('Initial forecast data inserted on server startup');
 }).catch(error => {
     console.error('Failed to insert initial forecast data on server startup:', error);
-});
-cron.schedule('0 1 * * *', () => {
-    console.log('Running scheduled task to insert forecast for all cities');
-    weatherRoutes.insertForecastForAllCities();
 });
 
 app.get('/historyPage', (req, res) => {
