@@ -96,6 +96,10 @@ weatherRoutes.insertForecastForAllCities().then(() => {
     console.error('Failed to insert initial forecast data on server startup:', error);
 });
 
+app.get('/historyPage', (req, res) => {
+    res.render('historyPage', { title: 'History Page' }); 
+});
+
 // SIGINT handler
 process.on('SIGINT', () => {
     db.end((err) => {
