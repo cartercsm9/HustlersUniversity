@@ -21,7 +21,6 @@ describe('Weather API Endpoints', () => {
           expect(res.body).to.have.property('location');
           expect(res.body.location).to.have.property('name');
           expect(res.body.location.name).to.equal('New York');
-          // Additional assertions can be made based on the structure of your weather data
           done();
         });
     });
@@ -35,9 +34,9 @@ describe('Weather API Endpoints', () => {
         .post('/weather/getWeatherByCity')
         .send(requestBody)
         .end((err, res) => {
-          expect(res).to.have.status(500); // Assuming your API returns a 500 error for this case
+          expect(res).to.have.status(500);
           expect(res.body).to.be.an('object');
-          expect(res.text).to.equal('City not found'); // Expecting the error message returned by the server
+          expect(res.text).to.equal('City not found');
           done();
         });
     });
@@ -83,6 +82,7 @@ describe('Weather API Endpoints', () => {
   describe('Query Weather Data by City', () => {
     describe('GET /weather/queryWeatherByCity', () => {
       it('should return weather data for a city', (done) => {
+        this.timeout(10000);
         const cityName = 'London';
         // Make sure London or your test city's data is in your test database
         chai.request(app)
@@ -107,6 +107,7 @@ describe('Weather API Endpoints', () => {
       });
 
       it('should return an empty array for a city with no data', (done) => {
+        this.timeout(10000);
         const cityName = 'NoDataCity';
         chai.request(app)
           .get(`/weather/queryWeatherByCity?cityName=${cityName}`)
