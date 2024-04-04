@@ -81,7 +81,7 @@ describe('Weather API Endpoints', () => {
   });
   describe('Query Weather Data by City', () => {
     describe('GET /weather/queryWeatherByCity', () => {
-      it('should return weather data for a city', (done) => {
+      it('should return weather data for a city', function(done){
         this.timeout(10000);
         const cityName = 'London';
         // Make sure London or your test city's data is in your test database
@@ -106,7 +106,7 @@ describe('Weather API Endpoints', () => {
           });
       });
 
-      it('should return an empty array for a city with no data', (done) => {
+      it('should return an empty array for a city with no data', function(done){
         this.timeout(10000);
         const cityName = 'NoDataCity';
         chai.request(app)
