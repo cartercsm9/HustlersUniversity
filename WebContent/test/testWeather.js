@@ -99,12 +99,14 @@ describe('Weather API Endpoints', () => {
           });
       });
       
-
-      it('should return an empty array for a city with no data', function(done){
-        this.timeout(10000);
+      it('should return an empty array for a city with no data', function(done) {
+        this.timeout(10000); // Adjust the timeout based on the expected response time
         const cityName = 'NoDataCity';
+        // Assuming that the timezoneOffset is needed as per your application logic, you should pass it if required
+        const timezoneOffset = new Date().getTimezoneOffset(); // Adjust if you have a specific timezone offset in your test data
+    
         chai.request(app)
-          .get(`/weather/queryWeatherByCity?cityName=${cityName}`)
+          .get(`/weather/queryWeatherByCity?cityName=${cityName}&timezoneOffset=${timezoneOffset}`)
           .end((err, res) => {
             if (err) {
               done(err);
@@ -112,11 +114,10 @@ describe('Weather API Endpoints', () => {
             }
             expect(res).to.have.status(200);
             expect(res.body).to.be.an('array');
-            expect(res.body.length).to.be.greaterThan(0);
+            expect(res.body.length).to.equal(0); // Expecting no data for the city
             done();
           });
       });
     });
   });
-  
 });
