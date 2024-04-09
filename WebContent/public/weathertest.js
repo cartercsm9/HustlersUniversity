@@ -42,7 +42,7 @@ function submitCityName(inputIdOrCityName, displayId) {
 function displayWeatherData(data) {
     // Toggle visibility of the weather panel
     const weatherPanel = document.getElementById('weatherPanel');
-    weatherPanel.style.display = 'block';
+    weatherPanel.style.display = 'flex';
     if (!data || !weatherPanel) {
         console.error('Weather data or panel is missing.');
         return;
@@ -79,20 +79,15 @@ function displayWeatherData(data) {
 function displayWeatherDataId(data, displayId) {
     const weatherDisplay = document.getElementById(displayId);
     if (weatherDisplay && data.location && data.current && data.current.condition) {
-        weatherDisplay.innerHTML = `
+        weatherDisplay.insertAdjacentHTML('afterbegin' , `
             <div class="weather-info">
                 <span class="weather-location">${data.location.name}</span>
                 <span class="weather-temperature">${data.current.temp_c}°C</span>
                 <span class="weather-condition">${data.current.condition.text}</span>
+                <img class="weather-icon" src="${data.current.condition.icon}" alt="Weather Icon">
             </div>
-        `;
-        
-        // Optionally, show an icon if available
-        if (data.current.condition.icon) {
-            weatherDisplay.innerHTML += `<img class="weather-icon" src="${data.current.condition.icon}" alt="Weather Icon">`;
-        }
+        `);
 
-        // Make sure to display the container in case it's initially hidden
         weatherDisplay.style.display = 'block';
     } else {
         weatherDisplay.innerHTML = '<p>Weather data is not available.</p>';

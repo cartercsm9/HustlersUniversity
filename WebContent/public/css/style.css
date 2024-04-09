@@ -8,25 +8,7 @@ body {
     flex-direction: column;
     min-height: 100vh;
 }
-/* Header Styles */
 
-header .header-container {
-    text-align: right;
-    padding: 10px 20px;
-}
-
-.login-link {
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: white;
-    text-decoration: none;
-    border-radius: 5px;
-    transition: background-color 0.3s;
-}
-
-.login-link:hover {
-    background-color: #0056b3;
-}
 /* Dashboard Styles */
 
 .dashboard {
@@ -41,6 +23,7 @@ header .header-container {
     gap: 20px;
     padding: 20px;
     width: 100%;
+    height: auto;
     max-width: 1200px;
     box-sizing: border-box;
 }
@@ -53,6 +36,22 @@ header .header-container {
     text-align: center;
 }
 
+#weatherPanel{
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
+    align-items: center; /* Center items horizontally */
+    justify-content: center; /* Center items vertically */
+    text-align: center; 
+    height:390px;
+}
+.weather-forecast-entry{
+    height: 70px;
+}
+
+#searchPanel{
+    height: 390px;
+    overflow: auto;
+}
 .panel h3, 
 .panel input[type=text], 
 .panel button {
@@ -104,8 +103,82 @@ header .header-container {
     width: 80px; 
     height: auto;
 }
-/* Weather Panel Styles */
 
+/* Header Styles */
+
+h1{
+    display: inline-block;
+    margin: 0;
+}
+.headerText{
+    display: block;
+    color: white;
+    text-align: center;
+    margin-top: -30px;
+}
+
+
+.header-container {
+    background-color: #007bff; 
+    padding: 10px 20px;
+    justify-content: center;
+    height: 8vw;
+}
+
+.navbar {
+    display: inline-flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+}
+
+.menu-container {
+    position: relative;
+    display: inline-block;
+}
+
+.menu-container .nav-links {
+    position: absolute;
+    left: 0;
+    top: 100%;
+    background-color: #f0f0f0; 
+    display: none;
+    padding: 5px 0;
+    border-radius: 5px;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+
+.menu-container:hover .nav-links {
+    display: block;
+}
+
+.menu-container > img {
+    height: 40px;
+    width: 40px;
+    cursor: pointer;
+}
+
+.nav-link, #sendButton {
+    display: block;
+    padding: 10px 15px;
+    color: white;
+    text-decoration: none;
+    background-color: #0056b3;
+    border: none;
+    cursor: pointer;
+    text-align: center; 
+}
+
+.nav-link:hover, #sendButton:hover {
+    background-color: #00387b;
+}
+
+
+.welcome-message {
+    color: white;
+}
+
+/* dashboard panels */
 #weatherPanel {
     text-align: center;
     display: flex;
@@ -115,10 +188,17 @@ header .header-container {
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
-/* Direct children of #weatherPanel */
+
 #weatherPanel > * {
     text-align: center; 
 }
+
+#weatherIcon{
+    margin: auto;
+    align-self: auto;
+    justify-content: auto;
+}
+
 #cityName {
     font-weight: bold;
     font-size: 24px; 
