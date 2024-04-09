@@ -1,0 +1,91 @@
+Completed Features:
+Weather Data Management:
+
+Fetching current weather data by city name (getWeatherByCity endpoint).
+Inserting weather forecast data for a specified city (insertForecast endpoint and insertForecastData function).
+Querying weather data by city name and timezone offset (queryWeatherByCity endpoint).
+Fetching weather data using coordinates (getWeatherByCoor endpoint).
+Removing weather entries from the database (removeEntry endpoint).
+
+Historical Weather Data:
+
+Fetching historical weather data for cities (grabOldWeather endpoint).
+Querying historical weather data by city name (queryHistoryByCity endpoint).
+
+Database Operations:
+
+Establishing a connection to the MySQL database (database.js).
+Executing queries and handling database operations (database.js and various endpoints).
+
+Express.js Server Configuration:
+
+Configuring routes for weather-related functionalities (server.js).
+Handling middleware for request parsing and error handling (server.js).
+
+Frontend Integration:
+
+Integration with frontend components to display weather data.
+
+Location Management:
+
+Fetching current locations for weather data (fetchLocations function).
+
+Unfinished Promised Tasks:
+
+Frontend Integration:
+
+Further integration of backend functionalities with frontend components for a seamless user experience.
+
+User Authentication and Authorization:
+
+Implementing user authentication and authorization mechanisms for user-specific actions and data security.
+
+UI/UX Improvements:
+
+Enhancing the user interface with interactive elements, search functionalities, error notifications, and overall user experience enhancements.
+
+Potential Bugs:
+
+Error Handling:
+
+Incomplete error handling could lead to unhandled exceptions or unclear error messages for users.
+Redirects in error cases (removeEntry endpoint) might not provide clear feedback to users.
+Input Validation:
+
+Lack of comprehensive input validation in some endpoints could result in potential security vulnerabilities or unexpected behavior.
+
+Frontend-Backend Sync:
+
+Synchronization issues between frontend and backend components could cause data inconsistencies or display errors.
+
+Deeper Exploration:
+
+Geocoding Integration:
+
+Utilizing Geocoding API to fetch coordinates for cities, enhancing location-based weather data retrieval.
+
+Weather API Integration:
+
+Interacting with Weather API for current weather and forecast data, handling responses and data transformations.
+
+Database Management:
+
+Managing weather data storage in the MySQL database, including insertion, deletion, and querying operations.
+
+Middleware and Routing:
+
+Implementing middleware for request parsing and error handling in Express.js.
+Defining routes and handling various endpoints for weather data operations.
+
+Asynchronous Operations:
+
+Utilizing asynchronous operations with async/await for API calls and database interactions, ensuring non-blocking execution.
+
+Client-Side Timezone Handling:
+
+Calculating local time based on the client's timezone offset for accurate weather data retrieval (queryWeatherByCity endpoint).
+
+Data Presentation:
+
+Formatting and presenting weather data in JSON format for client-side consumption.
+Potential implementation of frontend components to display weather information graphically or interactively.

@@ -130,6 +130,12 @@ app.get('/fav',(req,res)=>{
 
 app.get('/historyPage', (req, res) => {
     res.render('historicalWeatherData', { title: 'Historical Data' });
+
+app.get('/admin', (req, res) => {
+    res.render('admin', { title: 'Admin Page' }); 
+});
+app.get('/historyPage',(req,res)=>{
+    res.render('historicalWeatherData', {title: 'Historical Data'});
 });
 
 app.get('/userPref', (req, res) => {

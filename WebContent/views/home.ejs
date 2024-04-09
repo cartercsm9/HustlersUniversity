@@ -17,31 +17,38 @@
 
             requestUserLocation(userAgreed);
         });
-    </script>
-</head>
-<body>
-    <header>
-        <header>
-            <div class="header-container">
-                <nav>
-                    <% if (username) { %>
-                        <a href="/logout" class="login-link">Logout</a>
-                    <% } else { %>
-                        <a href="/login" class="login-link">Login</a>
-                    <% } %>
-                </nav>
-                <% if (username) { %>
-                    <p class="welcome-message">Welcome <%= username %></p>
-                    <a href="/users/admin" class="login-link">Admin</a>
-                <% } %>
-            </div>
-        </header>
-    </header>
-    <main class="dashboard">
-        <div>
-            <button id="sendButton">Send Email Notification</button>
-        </div>
 
+    </script>
+
+</head>
+
+<body>
+    <header class="header-container">
+        <nav class="navbar">
+            <div class="menu-container">
+                <img src="imgs/588a64e0d06f6719692a2d10.png" class="menu-button">
+                <div class="nav-links">
+                    <a href="/forecast" class="nav-link">Forecast Search</a>
+                    <a href="/history" class="nav-link">Historical Data</a>
+                    <a href="/map" class="nav-link">Map</a>
+                    <a href="/userPref" class="nav-link">User Preference</a>
+                    <% if (username) { %>
+                        <a href="/users/admin" class="nav-link">Admin</a>
+                        <a href="/logout" class="nav-link">Logout</a>
+                    <% } else { %>
+                        <a href="/login" class="nav-link">Login</a>
+                    <% } %>
+                </div>
+            </div>
+        </nav>
+
+        <div class="headerText">
+            <h1>Weather Tracker</h1>
+            <p class="welcome-message">Welcome <%= username %></p>
+        </div>
+    </header>    
+
+    <main class="dashboard">
         <div class="info-panels">
             <div class="panel" id="weatherPanel">
                 <h3>Current Weather</h3>
@@ -50,37 +57,24 @@
                 <div id="condition"></div>
                 <img id="weatherIcon" src="" alt="Weather Icon" style="display:none;">
             </div>   
-            <div class="panel">
-                <h3>Forecast</h3>
+            <div class="panel" id="forecastPanel">
+                <h3>Current Forecast</h3>
                 <div id="weatherForecast"></div>
             </div>
-            <div class="panel">
-                <h3>Weather Search</h3>
+            <div class="panel" id="searchPanel">
+                <h3>Current Weather Search</h3>
                 <input type="text" id="cityinput" placeholder="Enter City Name">
                 <button onclick="submitCityName('cityinput','weatherDisplay')">Get Weather</button>
                 <div id="weatherDisplay"></div>
             </div>
-            <!-- Row 2 -->
-            <div class="panel">
-                <a href="/forecast" class="panel-link">Forecast Search</a>
-            </div>
-            <div class="panel">
-                <a href="/history" class="panel-link">Historical Data</a>
-            </div>
-            <div class="panel">
-                <a href="/map" class="panel-link">Map</a>
-            </div>
-            <div class="panel">
-                <a href="/userPref" class="panel-link">User Preference</a>
-            </div>
-            <div class="panel">
-                <a href="/aboutUs" class="panel-link">About Us</a>
-            </div>
-            <div class="panel">
-                <a href="/contactUs" class="panel-link">Contact Us</a>
-            </div>
         </div>
     </main>
+
+    <footer>
+        <a id="sendButton" class="nav-link">Alerts</a>
+        <a href="/aboutUs" class="nav-link">About Us</a>
+        <a href="/contactUs" class="nav-link">Contact Us</a>
+    </footer>
     <script src="/noti-helper.js"></script>
     <script src="/weathertest.js"></script>
     <script src="/getCurrentLocation.js"></script>
