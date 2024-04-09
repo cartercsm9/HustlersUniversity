@@ -12,11 +12,13 @@
 </head>
 <body>
     <header>
+        <a href="/home"><button>Home</button></a>
         <h1>Weather Tracker History</h1>
     </header>
     <main>
+        <p>Choose a Country</p>
+        <label></label>
         <div class="filter-buttons">
-            <label for="country1">Choose A Country:</label>
             <select name="country1" id="country1">
                 <option value="">Select a Country</option>
                 <% const uniqueCountries = [...new Set(locations.map(loc => loc.country))]; %>
@@ -24,8 +26,6 @@
                     <option value="<%= country %>"><%= country %></option>
                 <% }); %>
             </select>
-
-            <label for="location1">Choose A Location:</label>
             <select name="location1" id="location1" onchange="chartQuery()">
                 <option value="">Select a City</option>
                 <% locations.forEach(location => { %>
@@ -33,15 +33,12 @@
                 <% }); %>
             </select>
             <br><br>
-            <label for="country2">Choose A Country:</label>
             <select name="country2" id="country2">
                 <option value="">Select a Country</option>
                 <% uniqueCountries.forEach(country => { %>
                     <option value="<%= country %>"><%= country %></option>
                 <% }); %>
             </select>
-
-            <label for="location2">Choose A Location:</label>
             <select name="location2" id="location2" onchange="chartQuery()">
                 <option value="">Select a City</option>
                 <% locations.forEach(location => { %>
@@ -65,17 +62,6 @@
             </div>
         </div>
         <canvas id="weatherChart" width="800" height="400"></canvas>
-        <table>
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Location</th>
-                    <th>Temperature (°C)</th>
-                    <th>Condition</th>
-                </tr>
-            </thead>
-            <tbody id="weatherData"></tbody>
-        </table>
     </main>
 
     <script>
