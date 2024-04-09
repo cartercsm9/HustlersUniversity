@@ -68,11 +68,11 @@ router.post('/login', async (req, res) => {
 });
 
 router.post('/userPref', (req, res) => {
-    const { userId, preferredCity, temperatureUnit } = req.body;
+    const { userId, preferredCity, temperatureUnit, notifications} = req.body;
 
     // Insert user preferences into the database
-    const prefQuery = 'INSERT INTO user_preferences (user_id, preferred_city, temperature_unit) VALUES (?, ?, ?)';
-    db.query(prefQuery, [userId, preferredCity, temperatureUnit], (prefErr, prefResult) => {
+    const prefQuery = 'INSERT INTO user_preferences (user_id, preferred_city, temperature_unit, notifications) VALUES (?, ?, ?)';
+    db.query(prefQuery, [userId, preferredCity, temperatureUnit, notifications], (prefErr, prefResult) => {
         if (prefErr) {
             console.error('Error inserting user preferences:', prefErr);
             res.status(500).send('Error inserting user preferences');

@@ -30,6 +30,7 @@ CREATE TABLE admins (
 CREATE TABLE weather_data (
     weather_id INT AUTO_INCREMENT PRIMARY KEY,
     city VARCHAR(255) NOT NULL,
+    country VARCHAR(255) NOT NULL,
     forecast_date DATE NOT NULL DEFAULT (CURRENT_DATE),
     temperature DECIMAL(5, 2) NOT NULL,
     weather_description TEXT NOT NULL,
@@ -51,3 +52,4 @@ CREATE TABLE user_preferences (
 );
 
 
+ALTER TABLE user_preferences ADD notifications BOOLEAN DEFAULT FALSE;

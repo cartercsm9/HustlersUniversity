@@ -4,20 +4,32 @@
     <meta charset="utf-8">
     <title>Weather Dashboard</title>
     <link rel="stylesheet" href="css/style.css">
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check if the user's agreement is stored in localStorage
+            let userAgreed = localStorage.getItem('userAgreed');
+
+            // If not, ask for permission and store the response
+            if (userAgreed === null) {
+                userAgreed = window.confirm("We need your location to provide local weather information. Do you allow us to access your location?");
+                localStorage.setItem('userAgreed', userAgreed);
+            }
+
+            requestUserLocation(userAgreed);
+        });
+    </script>
 </head>
 <body>
     <header>
         <header>
             <div class="header-container">
                 <nav>
-                    <!-- Include logout link if user is logged in -->
                     <% if (username) { %>
                         <a href="/logout" class="login-link">Logout</a>
                     <% } else { %>
                         <a href="/login" class="login-link">Login</a>
                     <% } %>
                 </nav>
-                <!-- Display welcome message centered -->
                 <% if (username) { %>
                     <p class="welcome-message">Welcome <%= username %></p>
                     <a href="/users/admin" class="login-link">Admin</a>
@@ -26,6 +38,10 @@
         </header>
     </header>
     <main class="dashboard">
+        <div>
+            <button id="sendButton">Send Email Notification</button>
+        </div>
+
         <div class="info-panels">
             <div class="panel" id="weatherPanel">
                 <h3>Current Weather</h3>
@@ -54,16 +70,19 @@
             <div class="panel">
                 <a href="/map" class="panel-link">Map</a>
             </div>
+            <div class="panel">
+                <a href="/userPref" class="panel-link">User Preference</a>
+            </div>
+            <div class="panel">
+                <a href="/aboutUs" class="panel-link">About Us</a>
+            </div>
+            <div class="panel">
+                <a href="/contactUs" class="panel-link">Contact Us</a>
+            </div>
         </div>
     </main>
-
+    <script src="/noti-helper.js"></script>
     <script src="/weathertest.js"></script>
     <script src="/getCurrentLocation.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', (event) => {
-            requestUserLocation();
-        });
-    </script>
-        
 </body>  
 </html>

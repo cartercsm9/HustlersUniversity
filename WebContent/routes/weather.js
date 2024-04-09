@@ -38,30 +38,37 @@ router.post('/getWeatherByCity', async (req, res) => {
 });
 
 
-// Endpoint to handle city name submission and respond with weather forecast data
-router.post('/insertForecast', async (req, res) => {
-    console.log('inserting weather data');
-    const { cityName } = req.body;
+// Core logic for inserting weather forecast
+async function insertForecastData(cityName) {
     try {
         const weatherUrl = `http://api.weatherapi.com/v1/forecast.json?key=${WEATHER_API_KEY}&q=${cityName}&days=3&aqi=no&alerts=yes`;
         const weatherResponse = await fetch(weatherUrl);
         const weatherData = await weatherResponse.json();
 
         if (weatherData && weatherData.forecast && weatherData.forecast.forecastday) {
-            await Promise.all(weatherData.forecast.forecastday.map(forecastDay => {
+            await Promise.all(weatherData.forecast.forecastday.map(async (forecastDay) => {
                 const city = cityName;
-                const forecast_date = forecastDay.date; // Use just the date for simplicity
+                const country = weatherData.location.country;
+                const forecast_date = forecastDay.date;
                 const temperature = forecastDay.day.maxtemp_c;
                 const weather_description = forecastDay.day.condition.text;
                 const icon = forecastDay.day.condition.icon;
                 const humidity = forecastDay.day.avghumidity;
                 const wind_speed = forecastDay.day.maxwind_kph;
-                // Add any additional fields you're interested in here
 
-                const sql = 'INSERT INTO weather_data (city, forecast_date, temperature, weather_description, icon, humidity, wind_speed) VALUES (?, ?, ?, ?, ?, ?, ?)';
-                const values = [city, forecast_date, temperature, weather_description, icon, humidity, wind_speed];
-                // Add any additional fields to the values array
-
+                const sql = `
+                  INSERT INTO weather_data 
+                  (city, country, forecast_date, temperature, weather_description, icon, humidity, wind_speed) 
+                  VALUES (?, ?, ?, ?, ?, ?, ?, ?) 
+                  ON DUPLICATE KEY UPDATE 
+                  temperature = VALUES(temperature), 
+                  weather_description = VALUES(weather_description), 
+                  icon = VALUES(icon), 
+                  humidity = VALUES(humidity), 
+                  wind_speed = VALUES(wind_speed);
+                `;
+                const values = [city, country, forecast_date, temperature, weather_description, icon, humidity, wind_speed];
+                
                 return new Promise((resolve, reject) => {
                     db.query(sql, values, (err, result) => {
                         if (err) return reject(err);
@@ -69,21 +76,55 @@ router.post('/insertForecast', async (req, res) => {
                     });
                 });
             }));
-            res.json({ message: "Weather data inserted successfully." });
+            return { message: "Weather data inserted successfully." };
         } else {
             console.log("No forecast data available or invalid response.");
-            res.status(400).json({ error: "No forecast data available or invalid response." });
+            throw new Error("No forecast data available or invalid response.");
         }
     } catch (error) {
-        console.error("Server error:", error);
-        res.status(500).json({ error: "Error fetching weather data." });
+        console.error("Error inserting forecast data:", error);
+        throw error; // Rethrow or handle as needed
+    }
+}
+
+
+// Endpoint to handle city name submission and respond with weather forecast data
+router.post('/insertForecast', async (req, res) => {
+    console.log('inserting weather data');
+    const { cityName } = req.body;
+
+    try {
+        const result = await insertForecastData(cityName);
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
 });
 
+// Function to insert forecast for all cities
+const insertForecastForAllCities = async () => {
+    const locations = await fetchLocations();
+    for (const location of locations) {
+        try {
+            console.log(`Inserting forecast for ${location.city}, ${location.country}`);
+            await insertForecastData(location.city);
+        } catch (error) {
+            console.error(`Error inserting forecast for ${location.city}, ${location.country}:`, error);
+        }
+    }
+};
 
 // Endpoint to query weather data by city name
 router.get('/queryWeatherByCity', async (req, res) => {
-    const { cityName } = req.query;
+    const { cityName, timezoneOffset } = req.query;
+    
+    // Calculate the local time of the client based on the provided timezone offset
+    const now = new Date();
+    const clientLocalTime = new Date(now.getTime() - (timezoneOffset * 60000)); // convert minutes to milliseconds
+    const currentDate = clientLocalTime.toISOString().split('T')[0];
+    
+    console.log(currentDate);
+
     const sql = `
         SELECT DISTINCT 
             city, 
@@ -94,9 +135,11 @@ router.get('/queryWeatherByCity', async (req, res) => {
             humidity,
             wind_speed
         FROM weather_data
-        WHERE forecast_date >= CURRENT_DATE AND city = ?;
-        `;
-    db.query(sql, [cityName], (err, result) => {
+        WHERE forecast_date >= ? AND city = ?;
+    `;
+
+    // Pass the current date and city name as parameters to the query
+    db.query(sql, [currentDate, cityName], (err, result) => {
         if (err) {
             console.error("Database query error:", err);
             res.status(500).json({ error: "Error querying weather data." });
@@ -105,6 +148,7 @@ router.get('/queryWeatherByCity', async (req, res) => {
         }
     });
 });
+
 
 router.post('/getWeatherByCoor', async (req, res) => {
     const { latitude, longitude } = req.body;
@@ -162,10 +206,57 @@ router.get('/grabOldWeather', async (req, res) => {
     });
 });
 
+// Endpoint to query weather data by city name
+router.get('/queryHistoryByCity', async (req, res) => {
+    const { cityName } = req.query;
+    const sql = `
+        SELECT DISTINCT 
+            city, 
+            forecast_date, 
+            temperature,
+            humidity,
+            wind_speed
+        FROM weather_data
+        WHERE city = ?;
+    `;
 
+    // Pass the current date and city name as parameters to the query
+    db.query(sql, [cityName], (err, result) => {
+        if (err) {
+            console.error("Database query error:", err);
+            res.status(500).json({ error: "Error querying weather data." });
+        } else {
+            res.json(result);
+        }
+    });
+});
 
+// get current locations
+const fetchLocations = () => {
+    return new Promise((resolve, reject) => {
+        const query = `SELECT DISTINCT city, country FROM weather_data ORDER BY city ASC`;
+        db.query(query, (err, results) => {
+            if (err) {
+                console.error('Error fetching locations:', err);
+                reject('Error fetching locations');
+            } else {
+                resolve(results);
+            }
+        });
+    });
+};
 
+//data export
+router.fetchLocations = fetchLocations;
+router.insertForecastForAllCities = insertForecastForAllCities;
 
+// At the end of your weather.js file
+module.exports = {
+    router,
+    fetchLocations,
+    insertForecastData,
+    insertForecastForAllCities
+};
 
 // Export the router
 module.exports = router;

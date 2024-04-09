@@ -1,5 +1,4 @@
-function requestUserLocation() {
-    const userAgreed = window.confirm("We need your location to provide local weather information. Do you allow us to access your location?");
+function requestUserLocation(userAgreed) {
     if (userAgreed) {
         if ("geolocation" in navigator) {
             navigator.geolocation.getCurrentPosition(position => {
@@ -62,4 +61,4 @@ function getCityName(latitude, longitude) {
 
 
 
-// module.exports.getCityName = getCityName;
+module.exports.getCityName = getCityName;

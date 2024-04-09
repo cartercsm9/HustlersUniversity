@@ -6,10 +6,17 @@ body {
 header {
     background-color: #216DFF;
     color: #fff;
-    padding: 20px;
+    padding-bottom: 20px;
+    padding-top: 20px;
     text-align: center;
     width: 100%;
     margin-bottom: 20px;
+}
+h2{
+    color: #216DFF;
+    padding-top: 20px;
+    text-align: center;
+    width: 100%;
 }
 main {
     padding: 20px;
@@ -60,16 +67,67 @@ th {
     font-weight: bold;
 }
 .graphs-container {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    place-items: center;
     width: 100%;
     margin-bottom: 20px;
 }
 .graph-box {
-    width: calc(33.33% - 10px);
-    height: 200px;
+    width: calc(80% - 10px);
+    height: 500px;
+    margin-bottom: 100px;
     background-color: #fff;
     border: 3px solid #216DFF;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+select {
+    width: 200px;
+    height: 40px;
+    font-size: 16px;
+    color: #333;
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f8f8f8;
+}
+
+select option {
+    background-color: #f0f0f0;
+    color: #333;
+    font-size: 16px;
+    padding: 5px;
+}
+
+
+.select2-container {
+    font-family: Arial, sans-serif;
+    max-width: 300px; 
+}
+
+.select2-selection {
+    border: 1px solid #ccc !important; 
+    border-radius: 4px !important; 
+    padding: 4px !important; 
+}
+
+
+.select2-dropdown {
+    border-radius: 4px; 
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.175); 
+}
+
+
+.select2-results__option {
+    padding: 8px; 
+    color: #333; 
+}
+
+
+.select2-search--dropdown .select2-search__field {
+    border: 1px solid #ccc;
+}
+
+#locations{
+    /* display: none; */
 }
