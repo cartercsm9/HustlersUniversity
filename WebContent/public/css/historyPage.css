@@ -4,6 +4,9 @@ body {
     padding: 0;
 }
 header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     background-color: #216DFF;
     color: #fff;
     padding-bottom: 20px;
@@ -12,6 +15,7 @@ header {
     width: 100%;
     margin-bottom: 20px;
 }
+
 h2{
     color: #216DFF;
     padding-top: 20px;
@@ -128,6 +132,26 @@ select option {
     border: 1px solid #ccc;
 }
 
-#locations{
-    /* display: none; */
+
+header button:hover {
+    background-color: #0056b3;
+}
+
+header button:focus {
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.5);
+}
+
+header button {
+    color: white;
+    background-color: #133575;
+    border-radius: 30px;
+    box-shadow: inset 0 0 0 #0056b3;
+    width:100px;
+    user-select: none;
+    text-decoration: none;
+}
+
+h1 {
+    text-align: center;
+    flex-grow: 1;
 }
