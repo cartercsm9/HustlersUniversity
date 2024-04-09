@@ -50,6 +50,10 @@ app.get('/map',(req,res)=>{
     res.render('mapPage', {title: 'Map'});
 });
 
+app.get('/eduRes',(req,res)=>{
+    res.render('eduRes', {title: 'Educational Recources'});
+});
+
 // SIGINT handler
 process.on('SIGINT', () => {
     db.end((err) => {
