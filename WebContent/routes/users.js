@@ -37,41 +37,55 @@ router.post('/signup', async (req, res) => {
     }
 });
 
-router.post('/login', async (req, res) => {
+router.post('/login', (req, res) => {
     const { username, password } = req.body;
 
     // Query the database to find the user by username
-    const query = 'SELECT * FROM users WHERE username = ?';
+    const query = 'SELECT user_id, password_hash FROM users WHERE username = ?';
     db.query(query, [username], async (err, results) => {
         if (err) {
-            console.error('Error retrieving user: ' + err.stack);
-            res.redirect('/login?error=Error retrieving user from the database.');
-            return;
+            console.error('Error retrieving user:', err);
+            return res.redirect('/login?error=An error occurred. Please try again later.');
         }
-    
+
+        // If no user found with the provided username
         if (results.length === 0) {
-            res.redirect('/login?error=Invalid username or password.');
-            return;
+            return res.redirect('/login?error=Invalid username or password.');
         }
-    
+
+        // Compare the provided password with the hashed password from the database
         const user = results[0];
         const match = await bcrypt.compare(password, user.password_hash);
-        if (match) {
-            // Set session variables upon successful login
-            req.session.loggedIn = true;
-            req.session.username = username;
-            res.redirect('/home'); // Redirect to home upon successful login
-        } else {
-            res.redirect('/login?error=Invalid username or password.');
+
+        if (!match) {
+            return res.redirect('/login?error=Invalid username or password.');
         }
-    });    
+
+        // If passwords match, set the userId in the session
+        req.session.userId = user.user_id;
+        req.session.loggedIn = true;
+        req.session.username = username;
+        
+        res.redirect('/home');
+    });
 });
 
 router.post('/userPref', (req, res) => {
-    const { userId, preferredCity, temperatureUnit, notifications} = req.body;
+    const { preferredCity, temperatureUnit, notifications } = req.body;
+    const userId = 1; // Get userId from session
 
+    if (!userId) {
+        res.status(401).send('User not authenticated');
+        return;
+    }
+    if (temperatureUnit !== 'Celsius' && temperatureUnit !== 'Fahrenheit') {
+        const unit = 'C';
+    }
+    else {
+        const unit = 'F';
+    }
     // Insert user preferences into the database
-    const prefQuery = 'INSERT INTO user_preferences (user_id, preferred_city, temperature_unit, notifications) VALUES (?, ?, ?)';
+    const prefQuery = 'INSERT INTO user_preferences (user_id, preferred_city, temperature_unit, notifications) VALUES (?, ?, ?, ?)';
     db.query(prefQuery, [userId, preferredCity, temperatureUnit, notifications], (prefErr, prefResult) => {
         if (prefErr) {
             console.error('Error inserting user preferences:', prefErr);
@@ -82,6 +96,7 @@ router.post('/userPref', (req, res) => {
         res.status(200).send('User preferences inserted successfully');
     });
 });
+
 
 router.get('/admin', (req, res) => {
     const usersQuery = 'SELECT * FROM users';

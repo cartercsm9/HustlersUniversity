@@ -5,4 +5,4 @@ RUN npm install
 RUN npm install mocha
 COPY ./WebContent .
 EXPOSE 3001
-CMD ["npm", "start"]
+CMD ["npm", "test"]

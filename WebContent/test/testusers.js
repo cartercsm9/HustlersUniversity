@@ -1,6 +1,6 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
-
+const { query } = require('../database.js');
 // Adjust the path as necessary to import your Express app
 const app = require('../app.js');
 
@@ -44,5 +44,32 @@ describe('User Authentication', () => {
           done();
         });
     });
+  });
+});
+
+describe('/POST /users/userPref', () => {
+  it('should set user preferences', (done) => {
+
+    const userId = 1 //result[0].id;
+
+    let preferences = {
+      userId: userId,
+      preferredCity: 'New York',
+      temperatureUnit: 'C',
+      notifications: true
+    };
+
+    chai.request(app)
+      .post('/users/userPref')
+      .send(preferences)
+      .end((err, res) => {
+        if (err) {
+          return done(err);
+        }
+
+        expect(res).to.have.status(200);
+        // Additional assertions as needed
+        done();
+      });
   });
 });

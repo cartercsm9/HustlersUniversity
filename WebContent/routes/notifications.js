@@ -1,9 +1,15 @@
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
+let userEmail; // Declare userEmail outside the function
+
+function setUserEmail(email) {
+  userEmail = email;
+}
+
 function sendEmail() {
   const msg = {
-    to: 'kkhejazin@gmail.com',
+    to: userEmail,
     from: 'codeCrafters420@gmail.com',
     subject: 'Sending with SendGrid is Fun',
     text: 'and easy to do anywhere, even with Node.js',
@@ -20,4 +26,10 @@ function sendEmail() {
     });
 }
 
-module.exports = sendEmail;
+module.exports = (req, res, next) => {
+  req.notifications = {
+    setUserEmail,
+    sendEmail
+  };
+  next();
+};
