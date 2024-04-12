@@ -5,7 +5,6 @@ const db = require('./database');
 const initialDelay = 5000; // Delay in milliseconds (5000 ms = 5 seconds)
 console.log('Waiting 5 seconds before attempting to connect...');
 setTimeout(() => {
-    connectToDatabase();
 }, initialDelay);
 
 
