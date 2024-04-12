@@ -2,6 +2,13 @@ const http = require('http');
 const app = require('./app');
 const db = require('./database');
 
+const initialDelay = 5000; // Delay in milliseconds (5000 ms = 5 seconds)
+console.log('Waiting 5 seconds before attempting to connect...');
+setTimeout(() => {
+    connectToDatabase();
+}, initialDelay);
+
+
 const port = 3001; // Port to listen on
 
 db.on('connected', () => {
