@@ -45,10 +45,12 @@ ALTER TABLE weather_data ADD UNIQUE(city, forecast_date);
 CREATE TABLE user_preferences (
     preference_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
-    preferred_city VARCHAR(255),
     temperature_unit CHAR(1),
+    emergency_alerts BOOLEAN DEFAULT FALSE,
+    daily_weather_updates BOOLEAN DEFAULT FALSE,
+    city_names TEXT,
     FOREIGN KEY (user_id) REFERENCES users(user_id),
-    CHECK (temperature_unit IN ('C', 'F')) -- 'C' for Celsius, 'F' for Fahrenheit
+    CHECK (temperature_unit IN ('C', 'F'))
 );
 
 

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="css/style.css">
+<title>User Alert Options</title>
+<style>
+    h1{
+        color:white;
+    }
+    #cityList {
+        margin-top: 10px;
+    }
+    .city-item {
+        background-color: #eee;
+        padding: 5px 10px;
+        margin-top: 5px;
+        border-radius: 5px;
+        display: inline-block;
+    }
+</style>
+</head>
+<body>
+<div class="header-container">
+    <a href="/home"><button class="panel">Home</button></a>
+    <h1>User Alert Options</h1>
+</div>
+<div class="panel">
+    <h3>Set Your Alerts</h3>
+    <label for="cityInput">Add cities:</label>
+    <input type="text" id="cityInput" placeholder="Enter city names" autocomplete="off">
+    <div id="cityList"></div>
+    <label><input type="checkbox" name="alertOptions" value="emergency"> Emergency Alerts</label>
+    <label><input type="checkbox" name="alertOptions" value="weather"> Daily Weather Updates</label>
+    <button id="sendButton">Save Settings</button>
+</div>
+
+<script>
+    document.getElementById('cityInput').addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            var cityInput = document.getElementById('cityInput');
+            var city = cityInput.value.trim();
+            if (city) {
+                var cityList = document.getElementById('cityList');
+                var newCity = document.createElement('div');
+                newCity.textContent = city;
+                newCity.classList.add('city-item');
+                cityList.appendChild(newCity);
+                cityInput.value = ''; 
+            }
+        }
+    });
+
+    document.getElementById('sendButton').addEventListener('click', function() {
+        var cities = Array.from(document.getElementsByClassName('city-item')).map(item => item.textContent);
+        console.log(cities);
+        var options = {
+            emergency: document.querySelector('input[name="alertOptions"][value="emergency"]').checked,
+            weather: document.querySelector('input[name="alertOptions"][value="weather"]').checked
+        };
+        // Ensure the property name matches the server-side expectation
+        fetch('/notifications/updateAlerts', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username: "<%= username %>", city_names: cities })
+        }).then(response => response.json())
+        .then(data => alert('Settings saved successfully!'))
+        .catch(error => alert('Error saving settings: ' + error));
+    });
+</script>
+</body>
+</html>
