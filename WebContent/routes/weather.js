@@ -250,7 +250,38 @@ const fetchLocations = () => {
 router.fetchLocations = fetchLocations;
 router.insertForecastForAllCities = insertForecastForAllCities;
 
-// At the end of your weather.js file
+//endpoint to get weather alerts
+router.post('/getAlerts', async (req, res) => {
+    const { cityName } = req.body;
+
+    // Geocoding URL to get coordinates for the city name
+    const geocodeUrl = `https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(cityName)}&limit=1&appid=${GEOCODING_API_KEY}`;
+
+    try {
+        const geoResponse = await fetch(geocodeUrl);
+        const geoData = await geoResponse.json();
+        console.log(geoData);
+
+
+        if (geoData && geoData.length > 0) {
+            const { lat, lon } = geoData[0];
+
+            // Fetch weather alert using the coordinates
+            const weatherUrl = `https://api.weatherapi.com/v1/current.json?key=${WEATHER_API_KEY}&q=${lat},${lon}`;
+            const weatherResponse = await fetch(weatherUrl);
+            const weatherData = await weatherResponse.json();
+
+            res.json(weatherData.alerts); // Send weather data back to the client
+        } else {
+            throw new Error("City not found");
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).send(error.message);
+    }
+});
+
+
 module.exports = {
     router,
     fetchLocations,

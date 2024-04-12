@@ -3,7 +3,7 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 function sendEmail() {
   const msg = {
-    to: 'kkhejazin@gmail.com',
+    to: 'cartercsm9@gmail.com',
     from: 'codeCrafters420@gmail.com',
     subject: 'Sending with SendGrid is Fun',
     text: 'and easy to do anywhere, even with Node.js',
