@@ -29,7 +29,7 @@ router.post('/signup', async (req, res) => {
             console.log('User inserted with id: ' + result.insertId);
             req.session.loggedIn = true; // Set session variable to indicate user is logged in
             req.session.username = username; // Store username in session for future use
-            res.status(200).send('User inserted successfully');
+            res.redirect('/login');
         });
     } catch (error) {
         console.error('Error hashing password: ' + error);
